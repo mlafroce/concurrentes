@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 2.6)
+project(concurrentes)
+
+add_library(concudaring
+	game/Player.cpp
+	game/DaringGame.cpp
+	game/Card.cpp
+	signals/SIGINT_Handler.cpp
+	signals/SignalHandler.cpp
+	util/Thread.cpp
+)
+
+add_executable(tp
+	main.cpp)
+	
+add_executable(tp-threaded
+	threaded-version.cpp)
+
+target_link_libraries(concudaring pthread)
+
+target_link_libraries(tp concudaring)
+target_link_libraries(tp-threaded concudaring)
