@@ -14,6 +14,7 @@ public:
 	void start();
 	void stop();
 private:
+    void dealCards();
 	std::vector<Card> discardPile;
 	std::vector<Player> playerList;
 	int numPlayers;

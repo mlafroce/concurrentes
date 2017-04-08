@@ -7,6 +7,7 @@ class Card {
 public:
 	Card(CardSuit suit, char rank);
 	char getRank();
+	static const char MaxCardRank;
 private:
 	CardSuit suit;
 	char rank;

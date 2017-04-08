@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <cstdio>
+#include <vector>
 #include <unistd.h>
 
 Player::Player(char playerId) : 
@@ -17,4 +18,8 @@ void Player::run() {
 void Player::stop() {
 	printf("Jugador[%d]->stop()\n", this->id);
 	this->running = false;
+}
+
+void Player::take(const Card& card) {
+	this->cards.push_back(card);
 }
