@@ -7,6 +7,7 @@ add_library(concudaring
 	game/Card.cpp
 	signals/SIGINT_Handler.cpp
 	signals/SignalHandler.cpp
+	util/Semaphore.cpp
 	util/Thread.cpp
 )
 

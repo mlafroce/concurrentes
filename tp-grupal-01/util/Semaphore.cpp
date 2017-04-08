@@ -3,7 +3,7 @@
 
 // Sem type 0 para threads, otro para procesos
 Semaphore::Semaphore (unsigned int initValue) {
-	int retValue = sem_init(this->sem, 0, initValue);
+	int retValue = sem_init(&this->sem, 0, initValue);
 }
 
 Semaphore::~Semaphore() {
