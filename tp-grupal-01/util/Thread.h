@@ -18,4 +18,4 @@ private:
 	Thread &operator=(const Thread &) = delete;
 };
 
-#endif //EJERCICIO3_THREAD_H
+#endif // THREAD_H
