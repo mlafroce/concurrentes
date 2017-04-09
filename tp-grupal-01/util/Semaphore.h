@@ -7,6 +7,7 @@ class Semaphore {
 public:
 	Semaphore(unsigned int initValue);
 	void signal();
+	void signal(int n);
 	void wait();
 	virtual ~Semaphore();
 	Semaphore(Semaphore&& other);
