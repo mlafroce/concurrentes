@@ -2,6 +2,7 @@
 #define DARINGGAME_H
 
 #include <vector>
+#include "TurnManager.h"
 
 class Card;
 class Player;
@@ -17,6 +18,7 @@ private:
     void dealCards();
 	std::vector<Card> discardPile;
 	std::vector<Player> playerList;
+	TurnManager turnManager;
 	int numPlayers;
 	bool status;
 };

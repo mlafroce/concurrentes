@@ -1,5 +1,5 @@
-#include <iostream>
 #include "Semaphore.h"
+#include <utility>
 
 // Sem type 0 para threads, otro para procesos
 Semaphore::Semaphore (unsigned int initValue) {
@@ -16,4 +16,13 @@ void Semaphore::signal() {
 
 void Semaphore::wait() {
 	sem_wait(&this->sem);
+}
+
+Semaphore::Semaphore(Semaphore&& other) {
+	this->sem = std::move(other.sem);
+}
+
+Semaphore& Semaphore::operator=(Semaphore&& other) {
+	this->sem = std::move(other.sem);
+	return *this;
 }

@@ -5,11 +5,12 @@
 #include "Player.h"
 
 DaringGame::DaringGame(int numPlayers) :
-	numPlayers(numPlayers) {
+	turnManager(playerList), numPlayers(numPlayers) {
 	playerList.reserve(numPlayers);
 	for (char i = 0; i < this->numPlayers; ++i) {
-		playerList.emplace_back(Player{i});
+		playerList.emplace_back(Player{i, this->turnManager});
 	}
+	turnManager = TurnManager(playerList);
 	dealCards();
 }
 
@@ -21,6 +22,7 @@ void DaringGame::start() {
 	for (int i = 0; i < this->numPlayers; ++i) {
 		playerList[i].start();
 	}
+	turnManager.signalNext(playerList.back());
 	// No se que ponerle para que no haga busy-waiting
 	for (int i = 0; i < this->numPlayers; ++i) {
 		playerList[i].join();

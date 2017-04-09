@@ -9,6 +9,8 @@ public:
 	void signal();
 	void wait();
 	virtual ~Semaphore();
+	Semaphore(Semaphore&& other);
+	Semaphore& operator=(Semaphore&& other);
 private:
 	sem_t sem;
 	Semaphore(const Semaphore &) = delete;

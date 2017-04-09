@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 2.6)
 project(concurrentes)
 
 add_library(concudaring
-	game/Player.cpp
-	game/DaringGame.cpp
 	game/Card.cpp
+	game/DaringGame.cpp
+	game/Player.cpp
+	game/TurnManager.cpp
 	signals/SIGINT_Handler.cpp
 	signals/SignalHandler.cpp
 	util/Semaphore.cpp

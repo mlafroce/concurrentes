@@ -3,14 +3,18 @@
 #include <vector>
 #include <unistd.h>
 
-Player::Player(char playerId) : 
-	Thread(), id(playerId), running(false){}
+#include "TurnManager.h"
+
+Player::Player(char playerId, TurnManager& turnManager) : 
+	Thread(), turnManager(turnManager), id(playerId), running(false){}
 
 void Player::run() {
 	this->running = true;
+	printf("Arrancando el jugador %d\n", this->id);
 	while (this->running) {
-		printf("Soy el jugador %d\n", this->id);
-		sleep(1);
+		turnManager.wait(*this);
+		printf("Jugando %d\n", this->id);
+		turnManager.signalNext(*this);
 	}
 	printf("Listo para join%d\n", this->id);
 }
@@ -22,4 +26,8 @@ void Player::stop() {
 
 void Player::take(const Card& card) {
 	this->cards.push_back(card);
+}
+
+char Player::getId() const {
+	return this->id;
 }
