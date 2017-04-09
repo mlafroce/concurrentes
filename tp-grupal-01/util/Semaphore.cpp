@@ -14,6 +14,13 @@ void Semaphore::signal() {
 	sem_post(&this->sem);
 }
 
+void Semaphore::signal(int n) {
+	for (int i = 0; i < n; ++i) {
+		sem_post(&this->sem);
+	}
+}
+
+
 void Semaphore::wait() {
 	sem_wait(&this->sem);
 }
