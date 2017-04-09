@@ -1,6 +1,6 @@
 # Técnicas de programación concurrente
 
-![Travis CI](https://travis-ci.org/mlafroce/concurrentes.svg?branch=master)
+[![Travis CI](https://travis-ci.org/mlafroce/concurrentes.svg?branch=master)](https://travis-ci.org/mlafroce/concurrentes/)
 
 Trabajos prácticos de la materia Técnicas de programación concurrente (2017-1c)
 
