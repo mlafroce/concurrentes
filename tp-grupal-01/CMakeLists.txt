@@ -12,7 +12,7 @@ add_library(concudaring
 	signals/SignalHandler.cpp
 	util/Semaphore.cpp
 	util/Thread.cpp
-)
+		util/SharedMemory.cpp)
 
 add_executable(tp
 	main.cpp)
