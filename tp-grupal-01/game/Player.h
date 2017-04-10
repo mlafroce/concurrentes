@@ -12,7 +12,8 @@ public:
 	Player(char playerId, TurnManager& turnManager);
 	virtual void run();
 	void stop();
-	void take(const Card& card);
+	void processCard();
+	void playCard();
 	char getId() const;
 private:
 	std::vector<Card> cards;

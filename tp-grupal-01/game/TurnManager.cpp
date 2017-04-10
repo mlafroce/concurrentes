@@ -3,25 +3,27 @@
 
 #include <cstdio>
 
-TurnManager::TurnManager (const std::vector<Player>& players) {
-	this->semaphores.reserve(players.size());
-	for (int i = 0; i < players.size(); ++i) {
-		this->semaphores.emplace_back(Semaphore{0});
-	}
+TurnManager::TurnManager(const std::vector<Player>& players) 
+	: numPlayers(players.size()), turnCounter(0),
+	barTurnBegin(numPlayers), barProcessCard(numPlayers) {}
+
+void TurnManager::waitToTurnBegin() {
+	this->barTurnBegin.wait();
 }
 
-void TurnManager::signalAll() {
-	for (int i = 0; i < semaphores.size(); ++i) {
-		this->semaphores[i].signal();
-	}
+void TurnManager::waitToProcessCard() {
+	this->barProcessCard.wait();
 }
 
-void TurnManager::signalNext(const Player& player) {
-	char nextPlayer = player.getId();
-	nextPlayer = ++nextPlayer % semaphores.size();
-	semaphores.at(nextPlayer).signal();
+bool TurnManager::isMyTurn(const Player& player) {
+	return player.getId() == this->turnCounter;
 }
 
-void TurnManager::wait(const Player& player) {
-	semaphores.at(player.getId()).wait();
+void TurnManager::passTurn() {
+	this->turnCounter = ++this->turnCounter % this->numPlayers;
+}
+
+void TurnManager::freeBarriers() {
+	this->barTurnBegin.free();
+	this->barProcessCard.free();
 }

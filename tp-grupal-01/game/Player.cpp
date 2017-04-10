@@ -12,10 +12,18 @@ void Player::run() {
 	this->running = true;
 	printf("Arrancando el jugador %d\n", this->id);
 	while (this->running) {
-		turnManager.wait(*this);
-		printf("Jugando %d\n", this->id);
-		turnManager.signalNext(*this);
+		turnManager.waitToTurnBegin();
+		if (this->turnManager.isMyTurn(*this)) {
+			playCard();
+			turnManager.waitToProcessCard();
+			this->turnManager.passTurn();
+		} else {
+			turnManager.waitToProcessCard();
+		}
+		processCard();
 	}
+	// Destrabo barreras 
+	turnManager.freeBarriers();
 	printf("Listo para join%d\n", this->id);
 }
 
@@ -24,8 +32,12 @@ void Player::stop() {
 	this->running = false;
 }
 
-void Player::take(const Card& card) {
-	this->cards.push_back(card);
+void Player::playCard() {
+	printf("El jugador %d juega una carta\n", this->getId());
+}
+
+void Player::processCard() {
+	printf("El jugador %d procesa una carta\n", this->getId());
 }
 
 char Player::getId() const {

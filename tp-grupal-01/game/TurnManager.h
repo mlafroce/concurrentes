@@ -2,7 +2,7 @@
 #define TURNMANAGER_H
 
 #include <vector>
-#include "../util/Semaphore.h"
+#include "../util/BarrierSimple.h"
 
 class Player;
 
@@ -10,19 +10,30 @@ class TurnManager {
 public:
 	explicit TurnManager(const std::vector<Player>& players);
 	/**
-	 * Decrementa el semaforo asociado al jugador.
+	 * Devuelve true si el contador de turnos corresponde al id del jugador
 	 */
-	void wait(const Player& player);
+	bool isMyTurn(const Player& player);
 	/**
-	 * Despierta a todos los jugadores
+	 * Avanza el contador de turnos
 	 */
-	void signalAll();
+	void passTurn();
 	/**
-	 * Busca el jugador siguiente a @param player y lo despierta
+	 * Activa la barrera previa a jugar el turno
 	 */
-	void signalNext(const Player& player);
+	void waitToTurnBegin();
+	/**
+	 * Activa la barrera entre previa a procesar la carta jugada
+	 */
+	void waitToProcessCard();
+	/**
+	 * Destraba las barreras
+	 */
+	void freeBarriers();
 private:
-	std::vector<Semaphore> semaphores;
+	int numPlayers;
+	int turnCounter;
+	BarrierSimple barTurnBegin;
+	BarrierSimple barProcessCard;
 };
 
 #endif // TURNMANAGER_H

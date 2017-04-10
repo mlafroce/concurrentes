@@ -22,7 +22,6 @@ void DaringGame::start() {
 	for (int i = 0; i < this->numPlayers; ++i) {
 		playerList[i].start();
 	}
-	turnManager.signalNext(playerList.back());
 	// No se que ponerle para que no haga busy-waiting
 	for (int i = 0; i < this->numPlayers; ++i) {
 		playerList[i].join();
@@ -45,6 +44,6 @@ void DaringGame::dealCards() {
 	}
 	std::random_shuffle(cards.begin(), cards.end());
 	for (int i = 0; i < cards.size(); i++) {
-		playerList[i % this->numPlayers].take(cards[i]);
+		//playerList[i % this->numPlayers].take(cards[i]);
 	}
 }

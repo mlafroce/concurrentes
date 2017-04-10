@@ -10,6 +10,7 @@ add_library(concudaring
 	game/TurnManager.cpp
 	signals/SIGINT_Handler.cpp
 	signals/SignalHandler.cpp
+	util/BarrierSimple.cpp
 	util/Semaphore.cpp
 	util/Thread.cpp
 )
