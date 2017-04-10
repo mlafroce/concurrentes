@@ -13,7 +13,7 @@ add_library(concudaring
 	util/BarrierSimple.cpp
 	util/Semaphore.cpp
 	util/Thread.cpp
-)
+		util/SharedMemory.cpp)
 
 add_executable(tp
 	main.cpp)
