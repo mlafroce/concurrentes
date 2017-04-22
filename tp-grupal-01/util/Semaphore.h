@@ -1,21 +1,26 @@
 #ifndef SEMAPHORE_H
 #define SEMAPHORE_H
 
-#include <semaphore.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/types.h>
+#include <string>
 
 class Semaphore {
-public:
-	Semaphore(unsigned int initValue);
-	void signal();
-	void signal(int n);
-	void wait();
-	virtual ~Semaphore();
-	Semaphore(Semaphore&& other);
-	Semaphore& operator=(Semaphore&& other);
+
 private:
-	sem_t sem;
-	Semaphore(const Semaphore &) = delete;
-	Semaphore &operator=(const Semaphore &) = delete;
+	int id;
+	int initValue;
+
+	int init() const;
+
+public:
+	Semaphore ( const std::string& name,const int initValue );
+	~Semaphore();
+
+	int p () const; // decrementa
+	int v () const; // incrementa
+	void Delete () const;
 };
 
 #endif //SEMAPHORE_H

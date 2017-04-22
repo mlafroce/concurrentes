@@ -1,35 +1,53 @@
 #include "Semaphore.h"
-#include <utility>
 
-// Sem type 0 para threads, otro para procesos
-Semaphore::Semaphore (unsigned int initValue) {
-	int retValue = sem_init(&this->sem, 0, initValue);
+Semaphore :: Semaphore ( const std::string& name,const int initValue ):initValue(initValue) {
+	key_t key = ftok ( name.c_str(),'a' );
+	this->id = semget ( key,1,0666 | IPC_CREAT );
+
+	this->init ();
 }
 
 Semaphore::~Semaphore() {
-	sem_destroy(&this->sem);
 }
 
-void Semaphore::signal() {
-	sem_post(&this->sem);
+int Semaphore :: init () const {
+
+	union semnum {
+		int val;
+		struct semid_ds* buf;
+		ushort* array;
+	};
+
+	semnum init;
+	init.val = this->initValue;
+	int result = semctl ( this->id,0,SETVAL,init );
+	return result;
 }
 
-void Semaphore::signal(int n) {
-	for (int i = 0; i < n; ++i) {
-		sem_post(&this->sem);
-	}
+int Semaphore :: p () const {
+
+	struct sembuf operation;
+
+	operation.sem_num = 0;	// numero de semaforo
+	operation.sem_op  = -1;	// restar 1 al semaforo
+	operation.sem_flg = SEM_UNDO;
+
+	int result = semop ( this->id,&operation,1 );
+	return result;
 }
 
+int Semaphore :: v () const {
 
-void Semaphore::wait() {
-	sem_wait(&this->sem);
+	struct sembuf operation;
+
+	operation.sem_num = 0;	// numero de semaforo
+	operation.sem_op  = 1;	// sumar 1 al semaforo
+	operation.sem_flg = SEM_UNDO;
+
+	int resultado = semop ( this->id,&operation,1 );
+	return resultado;
 }
 
-Semaphore::Semaphore(Semaphore&& other) {
-	this->sem = std::move(other.sem);
-}
-
-Semaphore& Semaphore::operator=(Semaphore&& other) {
-	this->sem = std::move(other.sem);
-	return *this;
+void Semaphore :: Delete () const {
+	semctl ( this->id,0,IPC_RMID );
 }
