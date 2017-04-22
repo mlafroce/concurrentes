@@ -1,19 +1,19 @@
 #include "BarrierSimple.h"
 
-BarrierSimple::BarrierSimple (int nWaiting)
-	: nWaiting(nWaiting), count(0), countMutex(1), turnstile(0) {}
+BarrierSimple::BarrierSimple (const std::string& name,int nWaiting)
+	: nWaiting(nWaiting), count(0), barrier(name,nWaiting) {}
 
 void BarrierSimple::wait() {
-	this->countMutex.wait();
+	this->barrier.wait();
 	this->count++;
 	if (this->count == this->nWaiting) {
-		this->turnstile.signal(this->nWaiting);
-		this->count = 0;
+
 	}
-	this->countMutex.signal();
-	this->turnstile.wait();
 }
 
 void BarrierSimple::free() {
-	this->turnstile.signal(this->nWaiting);
+	this->count = 0;
+	for (int i = 0; i <= nWaiting; ++i) {
+		this->barrier.signal();
+	}
 }

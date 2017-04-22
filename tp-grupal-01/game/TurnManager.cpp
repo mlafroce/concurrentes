@@ -5,7 +5,7 @@
 
 TurnManager::TurnManager(const std::vector<Player>& players) 
 	: numPlayers(players.size()), turnCounter(0),
-	barTurnBegin(numPlayers), barProcessCard(numPlayers) {}
+	barTurnBegin("",numPlayers), barProcessCard("",numPlayers) {}
 
 void TurnManager::waitToTurnBegin() {
 	this->barTurnBegin.wait();

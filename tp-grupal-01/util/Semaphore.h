@@ -16,10 +16,12 @@ private:
 
 public:
 	Semaphore ( const std::string& name,const int initValue );
-	~Semaphore();
+    ~Semaphore();
 
 	int p () const; // decrementa
 	int v () const; // incrementa
+    int wait() const;
+    int signal() const;
 	void Delete () const;
 };
 

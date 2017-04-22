@@ -1,7 +1,8 @@
 #include "Semaphore.h"
 
 Semaphore :: Semaphore ( const std::string& name,const int initValue ):initValue(initValue) {
-	key_t key = ftok ( name.c_str(),'a' );
+	//TODO: atrapar errores!
+    key_t key = ftok ( name.c_str(),'a' );
 	this->id = semget ( key,1,0666 | IPC_CREAT );
 
 	this->init ();
@@ -44,8 +45,16 @@ int Semaphore :: v () const {
 	operation.sem_op  = 1;	// sumar 1 al semaforo
 	operation.sem_flg = SEM_UNDO;
 
-	int resultado = semop ( this->id,&operation,1 );
-	return resultado;
+	int result = semop ( this->id,&operation,1 );
+	return result;
+}
+
+int Semaphore::wait() const {
+    p();
+}
+
+int Semaphore::signal() const {
+    v();
 }
 
 void Semaphore :: Delete () const {
