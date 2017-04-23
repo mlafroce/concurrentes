@@ -1,4 +1,5 @@
 #include "SharedMemory.h"
+#include "Utils.h"
 
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -8,16 +9,11 @@
 template <class T> SharedMemory<T>::SharedMemory ():shmId(0),ptrData(NULL) {}
 
 template <class T> void SharedMemory<T>::create ( const std::string& file,const char letter ) {
-    key_t key = ftok(file.c_str(),letter);
-    if (key < 1) {
-        std::string error_message = std::string("Error on ftok(): ") + std::string(strerror(errno));
-        throw error_message;
-    }
+    key_t key = Utils::generateKey(file,letter);
 
     this->shmId = shmget(key,sizeof(T),0644|IPC_CREAT);
     if (this->shmId < 1) {
-        std::string error_message = std::string("Error on shmget(): ") + std::string(strerror(errno));
-        throw error_message;
+        Utils::throwError( std::string("Error on shmget(): ") + std::string(strerror(errno)) );
     }
 
     this->attach();
@@ -26,8 +22,7 @@ template <class T> void SharedMemory<T>::create ( const std::string& file,const 
 template <class T> void SharedMemory<T>::attach() {
     void* tmpPtr = shmat(this->shmId,NULL,0);
     if ( tmpPtr == (void*) -1 ) {
-        std::string message = std::string("Error en shmat(): ") + std::string(strerror(errno));
-        throw message;
+        Utils::throwError( std::string("Error en shmat(): ") + std::string(strerror(errno)) );
     }
     this->ptrData = static_cast<T*> (tmpPtr);
 }
@@ -35,8 +30,7 @@ template <class T> void SharedMemory<T>::attach() {
 template <class T> void SharedMemory<T>::detach() {
     int errorDt = shmdt((void *) this->ptrData);
     if (errorDt == -1) {
-        std::string message = std::string("Error on shmdt(): ") + std::string(strerror(errno));
-        throw message;
+        Utils::throwError( std::string("Error on shmdt(): ") + std::string(strerror(errno)) );
     }
 
     if ( this->numberOfAttachedProcesses() == 0 ) {

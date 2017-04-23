@@ -2,16 +2,23 @@
 #include "signals/SIGINT_Handler.h"
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 
 #include "game/DaringGame.h"
+#include "Log/Log.h"
 
 int getOptions(int argc, char** argv);
 
 int main(int argc, char** argv) {
 	int numPlayers = getOptions(argc, argv);
 
+    Log::getInstance()->setLevel(DEBUG);
+    Log::getInstance()->setFile("DaringGame.log");
+    Log::getInstance()->showInSTDOUT(true);
+
     DaringGame game(numPlayers);
-	SIGINT_Handler sigIntHandler(game);
+    LOG_INFO("Juego inicializado con " + std::to_string(numPlayers) + " jugadores.");
+    SIGINT_Handler sigIntHandler(game);
 	SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
 
     game.start();
