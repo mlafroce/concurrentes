@@ -13,7 +13,7 @@ add_library(concudaring
 	util/BarrierSimple.cpp
 	util/Semaphore.cpp
 	util/Thread.cpp
-		util/SharedMemory.cpp util/LockFile.cpp util/LockFile.h util/Utils.cpp util/Utils.h Log/Log.cpp Log/Log.h)
+		util/SharedMemory.cpp util/LockFile.cpp util/LockFile.h util/Utils.cpp util/Utils.h Log/Log.cpp Log/Log.h util/Fifo.cpp util/Fifo.h)
 
 add_executable(tp
 	main.cpp)

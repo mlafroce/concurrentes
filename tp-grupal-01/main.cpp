@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
 
     DaringGame game(numPlayers);
     LOG_INFO("Juego inicializado con " + std::to_string(numPlayers) + " jugadores.");
+
     SIGINT_Handler sigIntHandler(game);
 	SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
 
