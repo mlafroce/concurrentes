@@ -28,8 +28,8 @@ std::string Utils::generateFileMessage(std::string file, int line) {
 
 key_t Utils::generateKey(const std::string &file, const char letter) {
     key_t key = ftok(file.c_str(),letter);
-    if (key < 1) {
-        Utils::throwError( std::string("Error on ftok(): ") + std::string(strerror(errno)) );
+    if (key == -1) {
+        Utils::throwError(std::string("Error on ftok(): [") + std::to_string(errno) + "] : " + std::string(strerror(errno)) );
     }
     return key;
 }

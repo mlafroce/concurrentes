@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sys/wait.h>
+
 
 #include "game/DaringGame.h"
 #include "Log/Log.h"
@@ -22,7 +24,16 @@ int main(int argc, char** argv) {
     SIGINT_Handler sigIntHandler(game);
 	SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
 
-    game.start();
+	bool imParent = false;
+	for (int i = 0; i < numPlayers; i++) {
+		pid_t pid = fork();
+		if (pid == 0) {
+			game.start(i);
+		} 
+	}
+	for (int i = 0; i < numPlayers; i++) {
+		waitpid(-1, 0, 0);
+	}
 
     SignalHandler::destruir();
 }

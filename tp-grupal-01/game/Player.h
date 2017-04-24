@@ -2,15 +2,14 @@
 #define PLAYER_H
 
 #include <vector>
-#include "../util/Thread.h"
 #include "Card.h"
 
 class TurnManager;
 
-class Player : public Thread {
+class Player {
 public:
-	Player(char playerId, TurnManager& turnManager);
-	virtual void run();
+	Player(TurnManager& turnManager);
+	void start(int id);
 	void stop();
 	void processCard();
 	void playCard();

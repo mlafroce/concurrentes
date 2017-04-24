@@ -3,22 +3,21 @@
 
 #include <vector>
 #include "TurnManager.h"
+#include "Player.h"
 
 class Card;
-class Player;
 
-class DaringGame
-{
+class DaringGame {
 public:
 	explicit DaringGame(int numPlayers);
 	~DaringGame();
-	void start();
+	void start(int id);
 	void stop();
 private:
     void dealCards();
 	std::vector<Card> discardPile;
-	std::vector<Player> playerList;
 	TurnManager turnManager;
+	Player player;
 	int numPlayers;
 	bool status;
 };

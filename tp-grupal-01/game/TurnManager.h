@@ -3,12 +3,13 @@
 
 #include <vector>
 #include "../util/BarrierSimple.h"
+#include "../util/SharedMemory.h"
 
 class Player;
 
 class TurnManager {
 public:
-	explicit TurnManager(const std::vector<Player>& players);
+	explicit TurnManager(int numPlayers);
 	/**
 	 * Devuelve true si el contador de turnos corresponde al id del jugador
 	 */
@@ -30,8 +31,10 @@ public:
 	 */
 	void freeBarriers();
 private:
+	static const std::string barrierFilename;
+	static const std::string sharedMemoryFilename;
 	int numPlayers;
-	int turnCounter;
+	SharedMemory<int> turnCounter;
 	BarrierSimple barTurnBegin;
 	BarrierSimple barProcessCard;
 };

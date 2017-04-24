@@ -58,14 +58,17 @@ void Log::write(const std::string &message, LOG_LEVEL logLevel) {
         Utils::throwError("[FATAL]. Cannot Log: Not file set `Log::setFile(const std::string &file_name)`");
     }
     if (logLevel <= this->level) {
-        std::string log_message = Utils::getTimeWithFormat() + "[" + LEVEL_STRING[logLevel] + "] " + message + "\n";
+        std::string log_message = Utils::getTimeWithFormat() + "[" +
+			LEVEL_STRING[logLevel] + "] " + "[PID: " + std::to_string(getpid()) +
+			"] " + message + "\n";
 
         lockFile->lock();
         lockFile->Write(log_message.c_str(),log_message.size());
         lockFile->free();
 
         if (this->showInStdOut){
-            std::string log_message_colored = Utils::getTimeWithFormat() + "[" + LEVEL_STRING_COLOR[logLevel] + "] " + message;
+            std::string log_message_colored = Utils::getTimeWithFormat() + "[" + LEVEL_STRING_COLOR[logLevel] + "] " +
+			"[PID: " + std::to_string(getpid()) + "] " +  message;
             std::cout << log_message_colored << std::endl;
         }
     }

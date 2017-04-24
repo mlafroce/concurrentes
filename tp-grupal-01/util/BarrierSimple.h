@@ -2,16 +2,18 @@
 #define BARRIERSIMPLE_H
 
 #include "Semaphore.h"
+#include "SharedMemory.h"
 
 class BarrierSimple {
 public:
-	BarrierSimple(const std::string& name,int nWaiting);
+	BarrierSimple(const std::string& name, char salt, int nWaiting);
 	void wait();
 	void free();
 private:
 	int nWaiting;
-	int count;
-	Semaphore barrier;
+	SharedMemory<int> count;
+	Semaphore turnstile;
+	Semaphore countMutex;
 };
 
 #endif // BARRIERSIMPLE_H

@@ -15,13 +15,15 @@ private:
 	int init() const;
 
 public:
-	Semaphore ( const std::string& name,const int initValue );
+	Semaphore (const std::string& name, char salt, const int initValue );
     ~Semaphore();
 
 	int p () const; // decrementa
 	int v () const; // incrementa
+	int v(int value) const;
     int wait() const;
     int signal() const;
+	int signal(int value) const;
 	void Delete () const;
 };
 

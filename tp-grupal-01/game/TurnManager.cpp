@@ -1,11 +1,20 @@
 #include "TurnManager.h"
 #include "Player.h"
+#include "../Log/Log.h"
 
 #include <cstdio>
 
-TurnManager::TurnManager(const std::vector<Player>& players) 
-	: numPlayers(players.size()), turnCounter(0),
-	barTurnBegin("",numPlayers), barProcessCard("",numPlayers) {}
+const std::string TurnManager::barrierFilename("/bin/bash");
+const std::string TurnManager::sharedMemoryFilename("/bin/bash");
+
+TurnManager::TurnManager(int numPlayers) 
+	: numPlayers(numPlayers),
+	turnCounter(sharedMemoryFilename, 't'),
+	barTurnBegin(barrierFilename, 'b', numPlayers),
+	barProcessCard(barrierFilename, 'p', numPlayers) {
+		LOG_INFO("Iniciado TurnManager");
+		turnCounter.write(0);
+	}
 
 void TurnManager::waitToTurnBegin() {
 	this->barTurnBegin.wait();
@@ -16,11 +25,14 @@ void TurnManager::waitToProcessCard() {
 }
 
 bool TurnManager::isMyTurn(const Player& player) {
-	return player.getId() == this->turnCounter;
+	return player.getId() == this->turnCounter.read();
 }
 
 void TurnManager::passTurn() {
-	this->turnCounter = ++this->turnCounter % this->numPlayers;
+	int curTurn = this->turnCounter.read() + 1;
+	curTurn %= numPlayers;
+	LOG_INFO("Asignando turno a " + std::to_string(curTurn));
+	this->turnCounter.write(curTurn);
 }
 
 void TurnManager::freeBarriers() {
