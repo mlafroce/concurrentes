@@ -28,8 +28,9 @@ int main(int argc, char** argv) {
 	for (int i = 0; i < numPlayers; i++) {
 		pid_t pid = fork();
 		if (pid == 0) {
-			game.start(i);
-		} 
+			int result = game.start(i);
+			return result;
+		}
 	}
 	for (int i = 0; i < numPlayers; i++) {
 		waitpid(-1, 0, 0);

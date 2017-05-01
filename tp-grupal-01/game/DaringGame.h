@@ -11,7 +11,7 @@ class DaringGame {
 public:
 	explicit DaringGame(int numPlayers);
 	~DaringGame();
-	void start(int id);
+	int start(int id);
 	void stop();
 private:
     void dealCards();

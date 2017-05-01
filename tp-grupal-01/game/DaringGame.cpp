@@ -13,8 +13,9 @@ DaringGame::~DaringGame() {
 	stop();
 }
 
-void DaringGame::start(int id) {
+int DaringGame::start(int id) {
 	player.start(id);
+	return 0;
 }
 
 void DaringGame::stop() {

@@ -1,5 +1,6 @@
 build
 *.kdev4
+DaringGame.log
 
 # Compiled Object files
 *.slo
