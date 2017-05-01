@@ -12,11 +12,11 @@ class SignalHandler {
 		static EventHandler* signal_handlers [NSIG];
 
 		SignalHandler (void);
-		static void dispatcher (int signum);
+		static void dispatcher(int signum);
 
 	public:
-		static SignalHandler* getInstance ();
-		static void destruir ();
+		static SignalHandler* getInstance();
+		static void deleteInstance();
 		EventHandler* registerHandler (int signum,EventHandler* eh);
 		int removeHandler (int signum);
 

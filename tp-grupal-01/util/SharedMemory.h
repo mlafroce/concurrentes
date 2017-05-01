@@ -3,6 +3,7 @@
 
 #include <string>
 
+
 class SharedMemoryBase {
 public:
     int numberOfAttachedProcesses() const;
@@ -12,7 +13,7 @@ protected:
 	~SharedMemoryBase();
 	int shmId;
 	void* ptrData;
-	void create(const std::string& file, const char letter, unsigned int dataSize);
+	void create(const std::string& file, const char letter, size_t dataSize);
 	void attach();
 	void detach();
 };

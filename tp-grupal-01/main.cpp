@@ -10,13 +10,13 @@
 #include "Log/Log.h"
 
 int getOptions(int argc, char** argv);
+void freeMemory();
+void initLog();
 
 int main(int argc, char** argv) {
 	int numPlayers = getOptions(argc, argv);
 
-    Log::getInstance()->setLevel(DEBUG);
-    Log::getInstance()->setFile("DaringGame.log");
-    Log::getInstance()->showInSTDOUT(true);
+    initLog();
 
     DaringGame game(numPlayers);
     LOG_INFO("Juego inicializado con " + std::to_string(numPlayers) + " jugadores.");
@@ -35,7 +35,19 @@ int main(int argc, char** argv) {
 		waitpid(-1, 0, 0);
 	}
 
-    SignalHandler::destruir();
+}
+
+void initLog() {
+	Log* log = Log::getInstance();
+	log->setLevel(DEBUG);
+	log->setFile("DaringGame.log");
+	log->showInSTDOUT(true);
+}
+
+void freeMemory() {
+	LOG_INFO("Free memory and exit");
+	Log::deleteInstance();
+	SignalHandler::deleteInstance();
 }
 
 int getOptions(int argc, char** argv) {

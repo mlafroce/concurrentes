@@ -8,11 +8,19 @@ add_library(concudaring
 	game/DaringGame.cpp
 	game/Player.cpp
 	game/TurnManager.cpp
+	game/action/Action.cpp
+	game/action/HandAction.cpp
+	game/action/SimpleAction.cpp
 	signals/SIGINT_Handler.cpp
 	signals/SignalHandler.cpp
 	util/BarrierSimple.cpp
+	util/Fifo.cpp
 	util/Semaphore.cpp
-		util/SharedMemory.cpp util/LockFile.cpp util/LockFile.h util/Utils.cpp util/Utils.h Log/Log.cpp Log/Log.h util/Fifo.cpp util/Fifo.h)
+	util/SharedMemory.cpp
+	util/LockFile.cpp
+	util/Utils.cpp
+	Log/Log.cpp
+)
 
 add_executable(tp
 	main.cpp)

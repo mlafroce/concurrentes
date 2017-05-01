@@ -4,7 +4,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <string.h>
-#include <iostream>
 
 SharedMemoryBase::SharedMemoryBase(int shmid, void* ptrData) :
 	shmId(shmid), ptrData(ptrData) {}
@@ -22,7 +21,6 @@ void SharedMemoryBase::create(const std::string& file, const char letter, size_t
     if (this->shmId < 1) {
         Utils::throwError( std::string("Error on shmget(): ") + std::string(strerror(errno)) );
     }
-
     this->attach();
 }
 
