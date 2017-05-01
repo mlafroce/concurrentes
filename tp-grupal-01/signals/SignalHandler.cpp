@@ -15,7 +15,7 @@ SignalHandler* SignalHandler::getInstance () {
 	return instance;
 }
 
-void SignalHandler::destruir () {
+void SignalHandler::deleteInstance () {
 	if (instance != NULL) {
 		delete instance;
 		instance = NULL;

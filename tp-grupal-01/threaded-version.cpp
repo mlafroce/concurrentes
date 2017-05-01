@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 
 	game.start();
 
-	SignalHandler::destruir();
+	SignalHandler::deleteInstance();
 }
 
 int getOptions(int argc, char** argv) {

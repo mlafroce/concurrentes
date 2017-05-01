@@ -26,7 +26,13 @@ Log::Log() {
     level = DEBUG;
 }
 
-Log::~Log() {}
+Log::~Log() {
+    if (lockFile != NULL) {
+        lockFile->free();
+        delete lockFile;
+    }
+    lockFile = NULL;
+}
 
 Log* Log::getInstance() {
     if (instance == NULL) {
