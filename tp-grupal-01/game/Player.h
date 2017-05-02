@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "Card.h"
+#include "Table.h"
+#include "../util/SharedMemory.h"
 
 class TurnManager;
 
@@ -16,6 +18,8 @@ public:
 	char getId() const;
 private:
 	std::vector<Card> cards;
+	//SharedMemory<int> getNumberOfCards;
+	Table table;
 	TurnManager& turnManager;
 	char id;
 	bool running;

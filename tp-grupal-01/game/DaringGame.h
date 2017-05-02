@@ -18,6 +18,7 @@ private:
 	std::vector<Card> discardPile;
 	TurnManager turnManager;
 	Player player;
+	Table table;
 	int numPlayers;
 	bool status;
 };

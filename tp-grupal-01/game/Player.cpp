@@ -6,12 +6,14 @@
 #include "TurnManager.h"
 #include "../Log/Log.h"
 
-Player::Player(TurnManager& turnManager) : 
-	turnManager(turnManager), running(false){}
+
+Player::Player(TurnManager& turnManager) :
+	turnManager(turnManager), running(false),table(Table()){}
 
 void Player::start(int id) {
 	this->id = id;
-	this->running = true;
+    this->running = true;
+    table.setNumberOfCards(this->getId(), (int) cards.size());
 	LOG_INFO("Arrancando el jugador " + std::string(1, 48 + this->id));
 	while (this->running) {
 		turnManager.waitToTurnBegin();
@@ -34,6 +36,8 @@ void Player::stop() {
 
 void Player::playCard() {
 	LOG_INFO("El jugador " + std::to_string(this->getId()) +"juega una carta\n");
+    //Card card = cards.pop_back();
+    //table.pushCard(card,this->getId());
 }
 
 void Player::processCard() {
