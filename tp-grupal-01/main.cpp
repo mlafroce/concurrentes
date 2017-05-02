@@ -5,9 +5,9 @@
 #include <iostream>
 #include <sys/wait.h>
 
-
 #include "game/DaringGame.h"
 #include "Log/Log.h"
+#include "util/Pipe.h"
 
 int getOptions(int argc, char** argv);
 void freeMemory();
@@ -26,10 +26,13 @@ int main(int argc, char** argv) {
 
 	bool imParent = false;
 	for (int i = 0; i < numPlayers; i++) {
+		Pipe cardPipe;
 		pid_t pid = fork();
 		if (pid == 0) {
-			int result = game.start(i);
+			int result = game.start(i, cardPipe);
 			return result;
+		} else {
+			game.sendCards(i, cardPipe);
 		}
 	}
 	for (int i = 0; i < numPlayers; i++) {

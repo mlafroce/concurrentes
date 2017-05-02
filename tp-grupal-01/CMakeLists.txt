@@ -15,6 +15,7 @@ add_library(concudaring
 	signals/SignalHandler.cpp
 	util/BarrierSimple.cpp
 	util/Fifo.cpp
+	util/Pipe.cpp
 	util/Semaphore.cpp
 	util/SharedMemory.cpp
 	util/LockFile.cpp

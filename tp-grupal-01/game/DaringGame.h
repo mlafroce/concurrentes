@@ -6,16 +6,28 @@
 #include "Player.h"
 
 class Card;
+class Pipe;
 
 class DaringGame {
 public:
 	explicit DaringGame(int numPlayers);
 	~DaringGame();
-	int start(int id);
+	/**
+	 * Inicializa el jugador
+	 */
+	int start(int id, Pipe& cardStream);
 	void stop();
+	/**
+	 * Recibe cartas por el pipe
+	 */
+	void receiveCards(Pipe& cardPipe);
+	/**
+	 * Envia cartas por el pipe
+	 */
+	void sendCards(int id, Pipe& cardPipe);
 private:
-    void dealCards();
-	std::vector<Card> discardPile;
+    void shuffleCards();
+	std::vector<Card> initialCards;
 	TurnManager turnManager;
 	Player player;
 	int numPlayers;

@@ -1,13 +1,18 @@
 #ifndef CARD_H
 #define CARD_H
+#include <string>
 
 enum CardSuit {A, B, C, D};
 
 class Card {
 public:
+	/**
+	 * Constructor
+	 */
 	Card(CardSuit suit, char rank);
-	char getRank();
+	char getRank() const;
 	static const char MaxCardRank;
+	std::string toString() const;
 private:
 	CardSuit suit;
 	char rank;

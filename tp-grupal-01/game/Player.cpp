@@ -11,8 +11,17 @@ Player::Player(TurnManager& turnManager) :
 
 void Player::start(int id) {
 	this->id = id;
+	
 	this->running = true;
 	LOG_INFO("Arrancando el jugador " + std::string(1, 48 + this->id));
+	play();
+}
+
+void Player::stop() {
+	this->running = false;
+}
+
+void Player::play() {
 	while (this->running) {
 		turnManager.waitToTurnBegin();
 		if (this->turnManager.isMyTurn(*this)) {
@@ -28,17 +37,22 @@ void Player::start(int id) {
 	turnManager.freeBarriers();
 }
 
-void Player::stop() {
-	this->running = false;
-}
 
 void Player::playCard() {
-	LOG_INFO("El jugador " + std::to_string(this->getId()) +"juega una carta\n");
+	Card card = this->cards.back();
+	this->cards.pop_back();
+	LOG_INFO("El jugador " + std::string(1, 48 + this->id)
+	+ " jugó " + card.toString());
 }
 
 void Player::processCard() {
-	printf("El jugador %d procesa una carta\n", this->getId());
+	sleep(1);
 }
+
+void Player::addCards(const std::vector<Card>& cards) {
+	this->cards.insert(this->cards.end(), cards.begin(), cards.end());
+}
+
 
 char Player::getId() const {
 	return this->id;
