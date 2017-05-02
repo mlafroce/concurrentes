@@ -33,3 +33,16 @@ key_t Utils::generateKey(const std::string &file, const char letter) {
     }
     return key;
 }
+
+std::vector<std::string> Utils::splitString(std::string the_string, std::string delimiter) {
+    char* string_char = const_cast<char*>(the_string.c_str());
+
+    std::vector<std::string> splitVector;
+
+    char* current = strtok( string_char,delimiter.c_str() );
+    while(current != NULL) {
+        splitVector.push_back(std::string(current));
+        current = strtok( NULL,delimiter.c_str() );
+    }
+    return splitVector;
+}

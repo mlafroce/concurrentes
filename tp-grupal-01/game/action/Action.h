@@ -2,11 +2,21 @@
 #define CONCURRENTES_ACTION_H
 
 #include "../../util/SharedMemory.h"
-#include <list>
+#include "../../util/LockFile.h"
+#include <vector>
+
 
 class Action {
 private:
-    SharedMemory<std::list<int>> *callsActions;
+    SharedMemory<int> *callsActions;
+    LockFile* lockFile;
+
+    std::vector<int> getVector() const;
+    std::string readFile() const;
+    void writeInLock(const std::string& text);
+
+    char actionID;
+    std::string temporalFileName;
 
 public:
     Action(const char actionID);
@@ -22,6 +32,8 @@ public:
 
     bool didAction(int id);
     int getIdPosition(int id);
+
+    void end();
 
 
 };

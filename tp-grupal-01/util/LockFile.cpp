@@ -32,6 +32,10 @@ ssize_t LockFile::Write(const void* buffer,const ssize_t buffer_size) const {
     return write(this->fd,buffer,(size_t)buffer_size);
 }
 
+ssize_t LockFile::Write(const std::string &buffer) const {
+    return this->Write(buffer.c_str(),buffer.size());
+}
+
 LockFile :: ~LockFile () {
     close(this->fd);
 }
