@@ -1,6 +1,8 @@
 #include "Table.h"
 
-Table::Table() : cardsOnTheTable(FILE, 'c'), playersNumberOfCards(FILE, 'n'){
+const std::string Table::tableFilename("/bin/bash");
+
+Table::Table() : cardsOnTheTable(tableFilename, 'c'), playersNumberOfCards(tableFilename, 'n'){
     cardsOnTheTable.write(new std::vector<Card>());
     playersNumberOfCards.write( new std::map<char,int>());
 }

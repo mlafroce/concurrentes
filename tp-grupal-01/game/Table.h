@@ -6,8 +6,6 @@
 #include "Card.h"
 #include "../util/SharedMemory.h"
 
-#define FILE "/bin/bash"
-
 class Table {
 public:
     Table();
@@ -24,6 +22,7 @@ public:
     void setNumberOfCards(char playerID, int cant);
 
 private:
+    static const std::string tableFilename;
     SharedMemory<std::vector<Card>*> cardsOnTheTable;
     SharedMemory<std::map<char,int>*> playersNumberOfCards;
 };
