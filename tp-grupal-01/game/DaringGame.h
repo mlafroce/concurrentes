@@ -30,6 +30,7 @@ private:
 	std::vector<Card> initialCards;
 	TurnManager turnManager;
 	Player player;
+	Table table;
 	int numPlayers;
 	bool status;
 };

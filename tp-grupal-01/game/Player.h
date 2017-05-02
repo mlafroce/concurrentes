@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "Card.h"
+#include "Table.h"
+#include "../util/SharedMemory.h"
 
 class TurnManager;
 
@@ -42,6 +44,8 @@ private:
 	 * Mano propia
 	 */
 	std::vector<Card> cards;
+	//SharedMemory<int> getNumberOfCards;
+	Table table;
 	/**
 	 * Clase auxiliar que lo comunica con otros mecanismos de IPC
 	 */
