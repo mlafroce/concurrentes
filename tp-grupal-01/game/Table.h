@@ -6,7 +6,7 @@
 #include "Card.h"
 #include "../util/SharedMemory.h"
 
-#define FILE "README.md"
+#define FILE "/bin/bash"
 
 class Table {
 public:
@@ -24,8 +24,8 @@ public:
     void setNumberOfCards(char playerID, int cant);
 
 private:
-    SharedMemory<std::vector<Card>> cardsOnTheTable;
-    SharedMemory<std::map<char,int>> playersNumberOfCards;
+    SharedMemory<std::vector<Card>*> cardsOnTheTable;
+    SharedMemory<std::map<char,int>*> playersNumberOfCards;
 };
 
 
