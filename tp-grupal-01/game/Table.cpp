@@ -4,17 +4,21 @@
 
 const std::string Table::tableFilename("DaringGame.log");
 
-Table::Table(int numPlayers) : lasCardSuit(tableFilename,'s'),lastCardRank(tableFilename,'r'),numCardsOnTable(tableFilename,'n'),cardsOnTable(new Pipe()) {
+Table::Table(int numPlayers) : lastCardSuit(tableFilename,'s'),lastCardRank(tableFilename,'r'),
+                               lastToLastCardSuit(tableFilename,'a'),lastToLastCardRank(tableFilename,'l'),
+                               numCardsOnTable(tableFilename,'n'),cardsOnTable(new Pipe()) {
     for (int i = 0; i < numPlayers ; ++i) {
         playersNumberOfCards.push_back(SharedMemory<int>(tableFilename,i));
     }
     lastCardRank.write(-1);
-    lasCardSuit.write(A);
+    lastCardSuit.write(A);
     numCardsOnTable.write(0);
+    lastToLastCardRank.write(-1);
+    lastToLastCardSuit.write(A);
 }
 
 Card Table::getLastCard() {
-    return Card(lasCardSuit.read(),lastCardRank.read());
+    return Card(lastCardSuit.read(),lastCardRank.read());
 }
 
 std::vector<Card> Table::takeAllCards(int playerID) {
@@ -36,8 +40,14 @@ void Table::pushCard(Card card,int playerID) {
     cardsOnTable->write(&card,sizeof(card));
     numCardsOnTable.write(numCardsOnTable.read()+1);
 
+    CardSuit suite = lastCardSuit.read();
+    int rank = lastCardRank.read();
+
     lastCardRank.write(card.getRank());
-    lasCardSuit.write(card.getSuite());
+    lastCardSuit.write(card.getSuite());
+
+    lastToLastCardRank.write(rank);
+    lastToLastCardSuit.write(suite);
 
     SharedMemory<int> shmem = playersNumberOfCards[playerID];
     int numCards = shmem.read();
@@ -57,6 +67,10 @@ void Table::setNumberOfCards(int playerID, int cant) {
 Table::~Table() {
     //delete(playersNumberOfCards);
     //delete(cardsOnTheTable);
+}
+
+Card Table::getLastToLastCard() {
+    return Card(lastToLastCardSuit.read(),lastToLastCardRank.read());
 }
 
 

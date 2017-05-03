@@ -14,6 +14,13 @@ public:
     CardSuit getSuite() const;
 	static const char MaxCardRank;
 	std::string toString() const;
+	bool operator==(Card& otherCard)const {
+		if (this->rank < 0 || otherCard.getRank() < 0){
+			return false;
+		}
+		return (this->rank == otherCard.getRank()) and (this->suit == otherCard.getSuite());
+	}
+
 private:
 	CardSuit suit;
 	char rank;

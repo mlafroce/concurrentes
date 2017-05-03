@@ -35,6 +35,15 @@ public:
 	 * identificador del jugador
 	 */
 	int getId() const;
+
+    void say(std::string phrase);
+
+    void venia();
+
+    /**
+	 * Pone la mano en la pila y retorna true si es el ultimo
+	 */
+    bool putHandOnHeap();
 private:
 	/**
 	 * Loop principal
@@ -44,8 +53,15 @@ private:
 	 * Mano propia
 	 */
 	std::vector<Card> cards;
-	Table table;
-	/**
+
+    /**
+     * Clase donde estan las cartas y datos compartidos
+     */
+    Table table;
+
+    void takeCardsOnTable();
+
+    /**
 	 * Clase auxiliar que lo comunica con otros mecanismos de IPC
 	 */
 	TurnManager& turnManager;
