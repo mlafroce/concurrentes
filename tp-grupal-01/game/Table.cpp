@@ -1,55 +1,57 @@
+#include <cstring>
+#include <iostream>
 #include "Table.h"
 
-const std::string Table::tableFilename("/bin/bash");
+const std::string Table::tableFilename("DaringGame.log");
 
-Table::Table() : cardsOnTheTable(tableFilename, 'c'), playersNumberOfCards(tableFilename, 'n'){
-    cardsOnTheTable.write(new std::vector<Card>());
-    playersNumberOfCards.write( new std::map<char,int>());
+Table::Table(int numPlayers) : lasCardSuit(tableFilename,'s'),lastCardRank(tableFilename,'r'),numCardsOnTable(tableFilename,'n'),cardsOnTable(new Pipe()) {
+    for (int i = 0; i < numPlayers ; ++i) {
+        playersNumberOfCards.push_back(SharedMemory<int>(tableFilename,i));
+    }
+    lastCardRank.write(-1);
+    lasCardSuit.write(A);
+    numCardsOnTable.write(0);
 }
 
 Card Table::getLastCard() {
-    std::vector<Card> cards = *cardsOnTheTable.read();
-    return cards[-1];
+    return Card(lasCardSuit.read(),lastCardRank.read());
 }
 
-std::vector<Card> Table::takeAllCards(char playerID) {
-    std::vector<Card> cards = *cardsOnTheTable.read();
-    cardsOnTheTable.write(new std::vector<Card>());
+std::vector<Card> Table::takeAllCards(int playerID) {
+    int cantCards = numCardsOnTable.read();
+    Card defaultCard(A, 0);
+    std::vector<Card> cards(cantCards, defaultCard);
+    cardsOnTable->read(cards.data(), sizeof(defaultCard) * cantCards);
+    numCardsOnTable.write(0);
 
-    std::map<char,int> mapPlayers = *playersNumberOfCards.read();
-    if (mapPlayers.find(playerID) != mapPlayers.end()){
-        mapPlayers[playerID] += cards.size();
-        playersNumberOfCards.write(&mapPlayers);
-    }
+    SharedMemory<int> shmem = playersNumberOfCards[playerID];
+    int numCards = shmem.read();
+    numCards += cards.size();
+    shmem.write(numCards);
 
     return cards;
 }
 
-void Table::pushCard(Card card,char playerID) {
-    std::vector<Card> cards = *cardsOnTheTable.read();
-    cards.push_back(card);
-    cardsOnTheTable.write(&cards);
+void Table::pushCard(Card card,int playerID) {
+    cardsOnTable->write(&card,sizeof(card));
+    numCardsOnTable.write(numCardsOnTable.read()+1);
 
-    std::map<char,int> mapPlayers = *playersNumberOfCards.read();
-    if (mapPlayers.find(playerID) != mapPlayers.end()){
-        mapPlayers[playerID] -= 1;
-        playersNumberOfCards.write(&mapPlayers);
-    }
+    lastCardRank.write(card.getRank());
+    lasCardSuit.write(card.getSuite());
+
+    SharedMemory<int> shmem = playersNumberOfCards[playerID];
+    int numCards = shmem.read();
+    numCards -=1;
+    shmem.write(numCards);
 }
 
-int Table::getNumberOfCards(char playerID) {
-    std::map<char,int> mapPlayers = *playersNumberOfCards.read();
-    if (mapPlayers.find(playerID) != mapPlayers.end()){
-        return mapPlayers[playerID];
-    }
-
-    return -1;
+int Table::getNumberOfCards(int playerID) {
+    return playersNumberOfCards[playerID].read();
 }
 
-void Table::setNumberOfCards(char playerID, int cant) {
-    std::map<char,int> mapPlayers = *playersNumberOfCards.read();
-    mapPlayers[playerID] = cant;
-    playersNumberOfCards.write(&mapPlayers);
+void Table::setNumberOfCards(int playerID, int cant) {
+    SharedMemory<int> shmem = playersNumberOfCards[playerID];
+    shmem.write(cant);
 }
 
 Table::~Table() {

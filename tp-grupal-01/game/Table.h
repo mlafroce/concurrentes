@@ -5,26 +5,30 @@
 #include <map>
 #include "Card.h"
 #include "../util/SharedMemory.h"
+#include "../util/Pipe.h"
 
 class Table {
 public:
-    Table();
+    Table(int numPlayers);
     ~Table();
     Card getLastCard();
 
     //retorna las cartas y las quita de la mesa.
-    std::vector<Card> takeAllCards(char playerID);
+    std::vector<Card> takeAllCards(int playerID);
 
-    void pushCard(Card card,char playerID);
+    void pushCard(Card card,int playerID);
 
-    int getNumberOfCards(char playerID);
+    int getNumberOfCards(int playerID);
 
-    void setNumberOfCards(char playerID, int cant);
+    void setNumberOfCards(int playerID, int cant);
 
 private:
     static const std::string tableFilename;
-    SharedMemory<std::vector<Card>*> cardsOnTheTable;
-    SharedMemory<std::map<char,int>*> playersNumberOfCards;
+    SharedMemory<char> lastCardRank;
+    SharedMemory<CardSuit> lasCardSuit;
+    std::vector<SharedMemory<int>> playersNumberOfCards;
+    Pipe* cardsOnTable;
+    SharedMemory<int> numCardsOnTable;
 };
 
 

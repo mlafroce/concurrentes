@@ -34,7 +34,7 @@ public:
 	/**
 	 * identificador del jugador
 	 */
-	char getId() const;
+	int getId() const;
 private:
 	/**
 	 * Loop principal
@@ -44,13 +44,12 @@ private:
 	 * Mano propia
 	 */
 	std::vector<Card> cards;
-	//SharedMemory<int> getNumberOfCards;
 	Table table;
 	/**
 	 * Clase auxiliar que lo comunica con otros mecanismos de IPC
 	 */
 	TurnManager& turnManager;
-	char id;
+	int id;
 	bool running;
 };
 

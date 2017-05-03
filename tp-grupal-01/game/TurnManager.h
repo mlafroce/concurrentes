@@ -30,6 +30,8 @@ public:
 	 * Destraba las barreras
 	 */
 	void freeBarriers();
+
+    int getNumberPlayers();
 private:
 	static const std::string barrierFilename;
 	static const std::string sharedMemoryFilename;

@@ -8,7 +8,7 @@
 
 
 Player::Player(TurnManager& turnManager) :
-	turnManager(turnManager), running(false),table(Table()){}
+	turnManager(turnManager), running(false),table(Table(turnManager.getNumberPlayers())){}
 
 void Player::start(int id) {
 	this->id = id;
@@ -44,13 +44,18 @@ void Player::playCard() {
 	Card card = this->cards.back();
 	this->cards.pop_back();
 	LOG_INFO("El jugador " + std::string(1, 48 + this->id)
-	+ " jugó " + card.toString());
-    //Card card = cards.pop_back();
-    //table.pushCard(card,this->getId());
+	+ " jugó " + card.toString() );
+    table.pushCard(card,this->getId());
 }
 
 void Player::processCard() {
 	sleep(1);
+    Card lastCard = table.getLastCard();
+    if (false){
+        std::vector<Card> cards = table.takeAllCards(this->getId());
+        this->addCards(cards);
+    }
+
 }
 
 void Player::addCards(const std::vector<Card>& cards) {
@@ -58,6 +63,6 @@ void Player::addCards(const std::vector<Card>& cards) {
 }
 
 
-char Player::getId() const {
+int Player::getId() const {
 	return this->id;
 }

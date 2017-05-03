@@ -39,3 +39,7 @@ void TurnManager::freeBarriers() {
 	this->barTurnBegin.free();
 	this->barProcessCard.free();
 }
+
+int TurnManager::getNumberPlayers() {
+    return numPlayers;
+}

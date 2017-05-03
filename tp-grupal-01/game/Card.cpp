@@ -29,3 +29,7 @@ std::string Card::toString() const {
 	}
 	return result.str();
 }
+
+CardSuit Card::getSuite() const {
+	return this->suit;
+}
