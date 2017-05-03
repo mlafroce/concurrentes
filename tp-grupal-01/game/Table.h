@@ -36,6 +36,8 @@ public:
      */
     void winned(int playerID);
 
+    std::map<std::string,int> stats();
+
 private:
     static const std::string tableFilename;
 

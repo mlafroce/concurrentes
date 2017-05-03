@@ -106,4 +106,17 @@ void Table::winned(int playerID) {
     }
 }
 
+std::map<std::string,int> Table::stats() {
+    std::map<std::string,int> stats;
+    for (int i = 0; i < playersNumberOfCards.size(); ++i) {
+        stats[std::to_string(i)] =playersNumberOfCards[i].read();
+    }
+    int winner = winnerPlayerID.read();
+    if (winner > 0){
+        stats["winner"] = winner;
+    }
+
+    return stats;
+}
+
 
