@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "Card.h"
 #include "Player.h"
-#include "../Log/Log.h"
+#include "../log/Log.h"
 #include "../util/Pipe.h"
 
 DaringGame::DaringGame(int numPlayers) :

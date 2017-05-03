@@ -7,7 +7,7 @@
 Fifo::Fifo(const std::string _name) : name(_name), fd(-1) {
     int result_mknod = mknod ( static_cast<const char*>(name.c_str()),S_IFIFO|0666,0 );
     if (result_mknod == -1){
-        Utils::throwError( std::string("Error en mknod() (constructor): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error en mknod() (constructor): ") + std::string(strerror(errno)) );
     }
 }
 
@@ -36,7 +36,7 @@ FifoWriting::~FifoWriting() {}
 void FifoWriting::Open() {
     fd = open ( name.c_str(),O_WRONLY );
     if (fd == -1){
-        Utils::throwError( std::string("Error en open() (constructor): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error en open() (constructor): ") + std::string(strerror(errno)) );
     }
 }
 
@@ -56,7 +56,7 @@ FifoReading::~FifoReading() {}
 void FifoReading::Open() {
     fd = open( name.c_str(),O_RDONLY );
     if (fd == -1){
-        Utils::throwError( std::string("Error en open() (constructor): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error en open() (constructor): ") + std::string(strerror(errno)) );
     }
 }
 

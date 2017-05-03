@@ -61,7 +61,7 @@ void Log::showInSTDOUT(bool show) {
 
 void Log::write(const std::string &message, LOG_LEVEL logLevel) {
     if (lockFile == NULL){
-        Utils::throwError("[FATAL]. Cannot Log: Not file set `Log::setFile(const std::string &file_name)`");
+        THROW_UTIL("[FATAL]. Cannot Log: Not file set `Log::setFile(const std::string &file_name)`");
     }
     if (logLevel <= this->level) {
         std::string log_message = Utils::getTimeWithFormat() + "[" +

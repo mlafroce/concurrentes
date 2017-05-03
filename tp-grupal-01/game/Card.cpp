@@ -12,19 +12,19 @@ char Card::getRank() const {
 
 std::string Card::toString() const {
 	std::stringstream result;
-	result << (int) rank << " de";
+	result << (rank + 1) << " de";
 	switch(this->suit) {
 		case A:
-			result << " basto";
+			result << " Basto";
 			break;
 		case B:
-			result << " copas";
+			result << " Copas";
 			break;
 		case C:
-			result << " espadas";
+			result << " Espadas";
 			break;
 		case D:
-			result << " oro";
+			result << " Oro";
 			break;
 	}
 	return result.str();

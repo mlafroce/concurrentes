@@ -16,5 +16,7 @@ public:
     static std::vector<std::string> splitString(std::string the_string, std::string delimiter);
 };
 
+#define THROW_UTIL(message) Utils::throwError( Utils::generateFileMessage(__FILE__,__LINE__) + ": " + message);
+
 
 #endif //CONCURRENTES_UTILS_H

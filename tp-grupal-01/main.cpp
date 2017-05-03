@@ -6,7 +6,7 @@
 #include <sys/wait.h>
 
 #include "game/DaringGame.h"
-#include "Log/Log.h"
+#include "log/Log.h"
 #include "util/Pipe.h"
 
 int getOptions(int argc, char** argv);

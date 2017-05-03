@@ -19,7 +19,7 @@ void SharedMemoryBase::create(const std::string& file, const char letter, size_t
 
     this->shmId = shmget(key, dataSize, 0644|IPC_CREAT);
     if (this->shmId < 1) {
-        Utils::throwError( std::string("Error on shmget(): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error on shmget(): ") + std::string(strerror(errno)) );
     }
     this->attach();
 }
@@ -27,7 +27,7 @@ void SharedMemoryBase::create(const std::string& file, const char letter, size_t
 void SharedMemoryBase::attach() {
     void* tmpPtr = shmat(this->shmId,NULL,0);
     if ( tmpPtr == (void*) -1 ) {
-        Utils::throwError( std::string("Error en shmat(): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error en shmat(): ") + std::string(strerror(errno)) );
     }
     this->ptrData =  tmpPtr;
 }
@@ -35,7 +35,7 @@ void SharedMemoryBase::attach() {
 void SharedMemoryBase::detach() {
     int errorDt = shmdt((void *) this->ptrData);
     if (errorDt == -1) {
-        Utils::throwError( std::string("Error on shmdt(): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error on shmdt(): ") + std::string(strerror(errno)) );
     }
 
     if ( this->numberOfAttachedProcesses() == 0 ) {

@@ -20,7 +20,7 @@ add_library(concudaring
 	util/SharedMemory.cpp
 	util/LockFile.cpp
 	util/Utils.cpp
-	Log/Log.cpp
+        log/Log.cpp
         game/Table.cpp game/Table.h)
 
 add_executable(tp

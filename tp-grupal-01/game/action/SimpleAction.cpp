@@ -1,5 +1,5 @@
 #include "SimpleAction.h"
-#include "../../Log/Log.h"
+#include "../../log/Log.h"
 
 
 SimpleAction::SimpleAction(const std::string& _name) : Action(_name.front()){

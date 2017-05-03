@@ -1,6 +1,6 @@
 #include "TurnManager.h"
 #include "Player.h"
-#include "../Log/Log.h"
+#include "../log/Log.h"
 
 #include <cstdio>
 

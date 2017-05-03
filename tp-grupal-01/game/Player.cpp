@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 #include "TurnManager.h"
-#include "../Log/Log.h"
+#include "../log/Log.h"
 
 
 Player::Player(TurnManager& turnManager) :
@@ -25,6 +25,7 @@ void Player::stop() {
 void Player::play() {
 	LOG_INFO("Arrancando el jugador " + std::string(1, 48 + this->id));
 	while (this->running) {
+        LOG_DEBUG("Jugador - " + std::to_string(this->id));
 		turnManager.waitToTurnBegin();
 		if (this->turnManager.isMyTurn(*this)) {
 			playCard();

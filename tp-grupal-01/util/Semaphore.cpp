@@ -1,12 +1,15 @@
+#include <cstring>
 #include "Semaphore.h"
-#include "../Log/Log.h"
+#include "../log/Log.h"
 
 Semaphore :: Semaphore (const std::string& name, char salt, const int initValue) :
 	initValue(initValue) {
-	//TODO: atrapar errores!
-    key_t key = ftok (name.c_str(), salt);
+    key_t key = Utils::generateKey(name,salt);
 	this->id = semget(key, 1, 0666 | IPC_CREAT );
-	this->init ();
+	if (this->id < 0){
+		THROW_UTIL( std::string("Error en semget() (crear): ") + std::string(strerror(errno)) );
+	}
+	this->init();
 }
 
 Semaphore::~Semaphore() {
@@ -23,8 +26,8 @@ int Semaphore::init() const {
 	semnum init;
 	init.val = this->initValue;
 	int result = semctl ( this->id,0,SETVAL,init );
-	if (result) {
-		LOG_INFO("Hubo un error al setear el semaforo" + std::to_string(this->id));
+	if (result < 0) {
+		THROW_UTIL( std::string("Error en semctl(): ") + std::string(strerror(errno)) );
 	}
 	return result;
 }
@@ -38,8 +41,9 @@ int Semaphore :: p () const {
 	operation.sem_flg = SEM_UNDO;
 
 	int result = semop ( this->id,&operation,1 );
-	if (result)
-		LOG_INFO("Hubo un error al decrementar el semaforo" + std::to_string(this->id));
+	if (result < 0) {
+		THROW_UTIL( "Hubo un error al decrementar el semaforo (p)" + std::to_string(this->id) + " (" + std::string(strerror(errno)) + ")" );
+	}
 	return result;
 }
 
@@ -52,28 +56,31 @@ int Semaphore :: v(int value) const {
 	struct sembuf operation;
 
 	operation.sem_num = 0;	// numero de semaforo
-	operation.sem_op  = value;	// sumar al semaforo
+	operation.sem_op  = (short)value;	// sumar al semaforo
 	operation.sem_flg = SEM_UNDO;
 
 	int result = semop ( this->id,&operation,1 );
-	if (result) {
-		LOG_INFO("Hubo un error al setear el semaforo" + std::to_string(this->id));
+	if (result < 0) {
+		THROW_UTIL( "Hubo un error al setear el semaforo (v[" + std::to_string(value) + "]) " + std::to_string(this->id) + " (" + std::string(strerror(errno)) + ")" );
 	}
 	return result;
 }
 
 int Semaphore::wait() const {
-    p();
+    return p();
 }
 
 int Semaphore::signal() const {
-    v();
+    return v();
 }
 
 int Semaphore::signal(int value) const {
-    v(value);
+    return v(value);
 }
 
 void Semaphore :: Delete () const {
-	semctl (this->id,0,IPC_RMID );
+	int result = semctl (this->id,0,IPC_RMID );
+	if (result < 0) {
+		THROW_UTIL( std::string("Error en semctl() (eliminar): ") + std::string(strerror(errno)) );
+	}
 }

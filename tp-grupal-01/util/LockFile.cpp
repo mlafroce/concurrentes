@@ -3,8 +3,6 @@
 #include <cstring>
 #include "Utils.h"
 
-
-
 LockFile::LockFile(const std::string &_name):name(_name) {
     this->flock1.l_type     = F_WRLCK;
     this->flock1.l_whence   = SEEK_SET;
@@ -13,7 +11,7 @@ LockFile::LockFile(const std::string &_name):name(_name) {
 
     this->fd = open(this->name.c_str(), O_CREAT | O_WRONLY, 0777);
     if (this->fd <= 0) {
-        Utils::throwError( std::string("Error on open() Lock (create): ") + std::string(strerror(errno)) );
+        THROW_UTIL( std::string("Error on open() Lock (create): ") + std::string(strerror(errno)) );
     }
 }
 

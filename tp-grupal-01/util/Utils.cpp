@@ -1,12 +1,12 @@
 #include <iostream>
 #include "Utils.h"
-#include "../Log/Log.h"
+#include "../log/Log.h"
 #include <ctime>
 #include <sys/ipc.h>
 #include <cstring>
 
 void Utils::throwError(const std::string &message) {
-    LOG_ERROR(message);
+    Log::getInstance()->error(message);
     std::cerr << message << std::endl;
     throw message;
 }
@@ -29,7 +29,7 @@ std::string Utils::generateFileMessage(std::string file, int line) {
 key_t Utils::generateKey(const std::string &file, const char letter) {
     key_t key = ftok(file.c_str(),letter);
     if (key == -1) {
-        Utils::throwError(std::string("Error on ftok(): [") + std::to_string(errno) + "] : " + std::string(strerror(errno)) );
+        THROW_UTIL(std::string("Error on ftok('" + file + "', '" + letter + "'): [") + std::to_string(errno) + "] : " + std::string(strerror(errno)) );
     }
     return key;
 }
