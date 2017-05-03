@@ -59,7 +59,15 @@ private:
      */
     Table table;
 
+    /**
+     * Toma todas las cartas de la mesa
+     */
     void takeCardsOnTable();
+
+    /**
+     * Chequea si aún que le quedan cartas y si es así termina el juego.
+     */
+    void checkNumberOfCards();
 
     /**
 	 * Clase auxiliar que lo comunica con otros mecanismos de IPC

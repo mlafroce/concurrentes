@@ -8,7 +8,8 @@ const std::string Table::tableFilename("DaringGame.log");
 Table::Table(int numPlayers) : lastCardSuit(tableFilename,'s'),lastCardRank(tableFilename,'r'),
                                lastToLastCardSuit(tableFilename,'a'),lastToLastCardRank(tableFilename,'l'),
                                numCardsOnTable(tableFilename,'n'),cardsOnTable(new Pipe()),
-                               lastPlayerWithHandInHeap(tableFilename,'p'),numPlayersWithHandInHeap(tableFilename,'m'){
+                               lastPlayerWithHandInHeap(tableFilename,'p'),numPlayersWithHandInHeap(tableFilename,'m'),
+                               winnerPlayerID(tableFilename,'w'){
     for (int i = 0; i < numPlayers ; ++i) {
         playersNumberOfCards.push_back(SharedMemory<int>(tableFilename,i));
     }
@@ -19,6 +20,7 @@ Table::Table(int numPlayers) : lastCardSuit(tableFilename,'s'),lastCardRank(tabl
     lastToLastCardSuit.write(A);
     lastPlayerWithHandInHeap.write(-1);
     numPlayersWithHandInHeap.write(0);
+    winnerPlayerID.write(-1);
 }
 
 Card Table::getLastCard() {
@@ -92,6 +94,16 @@ bool Table::putHandOnHeap(int playerID) {
     }
 
     return false;
+}
+
+int Table::winner() {
+    return winnerPlayerID.read();
+}
+
+void Table::winned(int playerID) {
+    if (winnerPlayerID.read() < 0){
+        winnerPlayerID.write(playerID);
+    }
 }
 
 

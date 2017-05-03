@@ -27,6 +27,10 @@ void Player::play() {
 	while (this->running) {
         LOG_DEBUG("Jugador - " + std::to_string(this->id));
 		turnManager.waitToTurnBegin();
+        if (table.winner() > 0){
+            stop();
+            continue;
+        }
 		if (this->turnManager.isMyTurn(*this)) {
 			playCard();
 			turnManager.waitToProcessCard();
@@ -95,7 +99,7 @@ void Player::processCard() {
         }
     }
 
-
+    checkNumberOfCards();
 }
 
 void Player::say(std::string phrase){
@@ -124,4 +128,11 @@ void Player::takeCardsOnTable() {
     std::vector<Card> cards = table.takeAllCards(this->getId());
     this->addCards(cards);
     LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " tomó todas ("+ std::to_string(cards.size()) +") las cartas de la mesa" );
+}
+
+void Player::checkNumberOfCards() {
+    if (this->cards.empty()){
+        LOG_INFO("El jugador " + std::to_string(this->id) + " se quedó sin cartas. GANÓ!!!" );
+        table.winned(this->getId());
+    }
 }

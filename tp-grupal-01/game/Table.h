@@ -26,6 +26,16 @@ public:
 
     bool putHandOnHeap(int playerID);
 
+    /**
+     * Si hay ganador retorna el ID, caso contrario -1
+     */
+    int winner();
+
+    /*
+     * Setea el ganador;
+     */
+    void winned(int playerID);
+
 private:
     static const std::string tableFilename;
 
@@ -47,6 +57,8 @@ private:
     //Pipe con las cartas en la mesa y cantidad en memoria compartida
     Pipe* cardsOnTable;
     SharedMemory<int> numCardsOnTable;
+
+    SharedMemory<int> winnerPlayerID;
 };
 
 
