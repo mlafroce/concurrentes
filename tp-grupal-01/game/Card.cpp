@@ -33,3 +33,7 @@ std::string Card::toString() const {
 CardSuit Card::getSuite() const {
 	return this->suit;
 }
+
+int Card::getNumber() const {
+	return (int)rank + 1;
+}

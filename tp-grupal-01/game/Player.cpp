@@ -15,7 +15,7 @@ void Player::start(int id) {
 	this->running = true;
 	LOG_INFO("Iniciando la mesa del jugador " + std::string(1, 48 + this->id));
     table.setNumberOfCards(this->getId(), (int) cards.size());
-	play();
+    play();
 }
 
 void Player::stop() {
@@ -25,8 +25,7 @@ void Player::stop() {
 void Player::play() {
 	LOG_INFO("Arrancando el jugador " + std::string(1, 48 + this->id));
 	while (this->running) {
-        LOG_DEBUG("Jugador - " + std::to_string(this->id));
-		turnManager.waitToTurnBegin();
+        turnManager.waitToTurnBegin();
         if (table.winner() > 0){
             stop();
             continue;
@@ -57,38 +56,40 @@ void Player::processCard() {
     Card lastCard = table.getLastCard();
     Card lastToLastCard = table.getLastToLastCard();
 
-    LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " procesara " + lastCard.toString() );
+    //LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " procesara " + lastCard.toString() );
 
     //sleep(1);
 
-    switch (lastCard.getRank()) {
+    switch (lastCard.getNumber()) {
 
         //1.  Si la carta es un 10, entonces todos los jugadores dicen en voz alta “Buenos d́ıas sẽnorita”.
-        case char(10):
+        case 10:
             say("Buenos días señorita");
             break;
 
         //2.  Si la carta es un 11, entonces todos los jugadores dicen en voz alta “Buenas noches caballero”.
-        case char(11):
+        case 11:
             say("Buenas noches caballero");
             break;
 
         //3.  Si la carta es un 12, entonces todos los jugadores hacen la venia (saludo militar).
-        case char(12):
+        case 12:
             venia();
             break;
 
         //4.  Si la carta es un 7, entonces todos los jugadores dicen en voz alta “Atrevido” y colocan su mano
         //sobre el piĺón que est́a en el centro de la mesa. El  ́ultimo jugador en poner la mano toma todas
         //las cartas del piĺon central y las agrega al suyo, poníendolas boca abajo.
-        case char(7):
+        case 7:
             say("Atrevido");
             if(putHandOnHeap()){
                 takeCardsOnTable();
             }
             break;
 
-        default:break;
+        default:
+            LOG_INFO("El jugador " + std::to_string(getId()) + " no genera acción inmediata ya que la carta es un " + std::to_string(lastCard.getNumber()));
+            break;
     }
 
     //5.  Si la carta es del mismo numero que la carta anterior, entonces todos los jugadores colocan su

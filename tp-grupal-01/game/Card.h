@@ -11,6 +11,7 @@ public:
 	 */
 	Card(CardSuit suit, char rank);
 	char getRank() const;
+    int getNumber() const;
     CardSuit getSuite() const;
 	static const char MaxCardRank;
 	std::string toString() const;

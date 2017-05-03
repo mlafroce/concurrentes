@@ -82,7 +82,9 @@ Card Table::getLastToLastCard() {
 bool Table::putHandOnHeap(int playerID) {
     lastPlayerWithHandInHeap.write(playerID);
     int cantPlayers = numPlayersWithHandInHeap.read();
-    numPlayersWithHandInHeap.write(cantPlayers + 1);
+    cantPlayers += 1;
+    numPlayersWithHandInHeap.write(cantPlayers);
+
 
     LOG_INFO(std::to_string(cantPlayers) + " pusieron la mano en el pilón.");
 
