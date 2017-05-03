@@ -108,11 +108,7 @@ void Player::venia() {
 
 bool Player::putHandOnHeap(){
     LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " puso la mano en la pila" );
-    //TODO
-    if (this->getId() == 0){
-        return true;
-    }
-    return false;
+    return table.putHandOnHeap(this->getId());
 }
 
 void Player::addCards(const std::vector<Card>& cards) {

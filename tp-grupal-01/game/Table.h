@@ -24,6 +24,8 @@ public:
 
     void setNumberOfCards(int playerID, int cant);
 
+    bool putHandOnHeap(int playerID);
+
 private:
     static const std::string tableFilename;
 
@@ -34,6 +36,10 @@ private:
     //Last to Last Card
     SharedMemory<char> lastToLastCardRank;
     SharedMemory<CardSuit> lastToLastCardSuit;
+
+    //Manos en el pilon de cartas
+    SharedMemory<int> lastPlayerWithHandInHeap;
+    SharedMemory<int> numPlayersWithHandInHeap;
 
     //Cantidad de cartas de cada jugador
     std::vector<SharedMemory<int>> playersNumberOfCards;
