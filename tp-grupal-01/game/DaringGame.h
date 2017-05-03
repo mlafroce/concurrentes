@@ -25,6 +25,8 @@ public:
 	 * Envia cartas por el pipe
 	 */
 	void sendCards(int id, Pipe& cardPipe);
+
+	Table getTable() const;
 private:
     void shuffleCards();
 	std::vector<Card> initialCards;

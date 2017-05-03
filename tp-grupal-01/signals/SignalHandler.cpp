@@ -1,5 +1,6 @@
 #include <memory.h>
 #include "SignalHandler.h"
+#include "../log/Log.h"
 
 SignalHandler* SignalHandler::instance = NULL;
 EventHandler* SignalHandler::signal_handlers [NSIG];
@@ -35,7 +36,7 @@ EventHandler* SignalHandler::registerHandler(int signum, EventHandler* eh) {
 	sigemptyset(&sa.sa_mask);
 	sigaddset(&sa.sa_mask,signum);
 	sigaction(signum,&sa,0);	// cambiar accion de la senial
-
+	LOG_DEBUG("Registrado handler para signum " + std::to_string(signum));
 	return old_eh;
 }
 

@@ -137,3 +137,7 @@ void Player::checkNumberOfCards() {
         table.winned(this->getId());
     }
 }
+
+Table Player::getTable() const {
+    return this->table;
+}

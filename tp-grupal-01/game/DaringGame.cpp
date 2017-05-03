@@ -9,6 +9,7 @@
 DaringGame::DaringGame(int numPlayers) :
 	turnManager(numPlayers), player(turnManager), numPlayers(numPlayers) {
 	shuffleCards();
+    LOG_INFO("Juego inicializado con " + std::to_string(numPlayers) + " jugadores.");
 }
 
 DaringGame::~DaringGame() {}
@@ -30,7 +31,12 @@ void DaringGame::receiveCards(Pipe& cardStream) {
 	cardStream.read(&numCards, sizeof(int));
 	std::vector<Card> newCards(numCards, defaultCard);
 	cardStream.read(newCards.data(), sizeof(defaultCard) * numCards);
-	LOG_INFO(std::string("Se recibieron ") + std::to_string(numCards) + " cartas");
+	LOG_INFO("Player id: " + std::to_string(player.getId()) + std::string(" recibió ") + std::to_string(numCards) + " cartas");
+    std::string cards;
+    for (Card &card : newCards) {
+        cards += "\n\t " + card.toString();
+    }
+    LOG_DEBUG("Player id: " + std::to_string(player.getId()) + "\n\tCartas recibidas:" + cards);
 	player.addCards(newCards);
 }
 
@@ -55,4 +61,8 @@ void DaringGame::shuffleCards() {
 		this->initialCards.push_back(Card{CardSuit::D, i});
 	}
 	std::random_shuffle(this->initialCards.begin(), this->initialCards.end());
+}
+
+Table DaringGame::getTable() const {
+    return player.getTable();
 }

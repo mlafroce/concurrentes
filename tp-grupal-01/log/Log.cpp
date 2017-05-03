@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <map>
+#include <sys/time.h>
 
 Log* Log::instance = NULL;
 LockFile* Log::lockFile = NULL;
@@ -24,6 +25,7 @@ static std::map<LOG_LEVEL,std::string> LEVEL_STRING = {
 Log::Log() {
     showInStdOut = false;
     level = DEBUG;
+    timePrecision = false;
 }
 
 Log::~Log() {
@@ -59,12 +61,24 @@ void Log::showInSTDOUT(bool show) {
     this->showInStdOut = show;
 }
 
+std::string calculateMiliseconds() {
+    struct timeval tval_before, tval_after, tval_result;
+
+    gettimeofday(&tval_before, NULL);
+    gettimeofday(&tval_after, NULL);
+    tval_before.tv_usec = 0;
+    timersub(&tval_after, &tval_before, &tval_result);
+
+    return std::to_string(tval_result.tv_usec);
+}
+
 void Log::write(const std::string &message, LOG_LEVEL logLevel) {
     if (lockFile == NULL){
         THROW_UTIL("[FATAL]. Cannot Log: Not file set `Log::setFile(const std::string &file_name)`");
     }
     if (logLevel <= this->level) {
-        std::string log_message = Utils::getTimeWithFormat() + "[" +
+        std::string miliseconds = (this->timePrecision) ? ("." + calculateMiliseconds()) : "";
+        std::string log_message = "[" + Utils::getTimeWithFormat() + miliseconds + "][" +
 			LEVEL_STRING[logLevel] + "] " + "[PID: " + std::to_string(getpid()) +
 			"] " + message + "\n";
 
@@ -73,10 +87,14 @@ void Log::write(const std::string &message, LOG_LEVEL logLevel) {
         lockFile->free();
 
         if (this->showInStdOut){
-            std::string log_message_colored = Utils::getTimeWithFormat() + "[" + LEVEL_STRING_COLOR[logLevel] + "] " +
+            std::string log_message_colored = "[" + Utils::getTimeWithFormat() + miliseconds + "][" + LEVEL_STRING_COLOR[logLevel] + "] " +
 			"[PID: " + std::to_string(getpid()) + "] " +  message;
             std::cout << log_message_colored << std::endl;
         }
     }
+}
+
+void Log::showTimePrecision(bool show) {
+    this->timePrecision = show;
 }
 

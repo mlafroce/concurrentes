@@ -44,6 +44,8 @@ public:
 	 * Pone la mano en la pila y retorna true si es el ultimo
 	 */
     bool putHandOnHeap();
+
+	Table getTable() const;
 private:
 	/**
 	 * Loop principal

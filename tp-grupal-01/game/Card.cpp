@@ -12,7 +12,7 @@ char Card::getRank() const {
 
 std::string Card::toString() const {
 	std::stringstream result;
-	result << (rank + 1) << " de";
+	result << std::to_string(rank) << " de";
 	switch(this->suit) {
 		case A:
 			result << " Basto";
@@ -35,5 +35,5 @@ CardSuit Card::getSuite() const {
 }
 
 int Card::getNumber() const {
-	return (int)rank + 1;
+	return (int)rank;
 }

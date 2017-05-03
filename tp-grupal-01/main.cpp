@@ -8,10 +8,12 @@
 #include "game/DaringGame.h"
 #include "log/Log.h"
 #include "util/Pipe.h"
+#include "game/Referee.h"
 
 int getOptions(int argc, char** argv);
 void freeMemory();
 void initLog();
+void wakeReferee(DaringGame game);
 
 int main(int argc, char** argv) {
 	int numPlayers = getOptions(argc, argv);
@@ -19,12 +21,10 @@ int main(int argc, char** argv) {
 	initLog();
 
     DaringGame game(numPlayers);
-    LOG_INFO("Juego inicializado con " + std::to_string(numPlayers) + " jugadores.");
 
     SIGINT_Handler sigIntHandler(game);
 	SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
 
-	bool imParent = false;
 	for (int i = 0; i < numPlayers; i++) {
 		Pipe cardPipe;
 		pid_t pid = fork();
@@ -35,10 +35,28 @@ int main(int argc, char** argv) {
 			game.sendCards(i, cardPipe);
 		}
 	}
-	for (int i = 0; i < numPlayers; i++) {
+
+	wakeReferee(game);
+
+	for (int i = 0; i < numPlayers + 1; i++) {
 		waitpid(-1, 0, 0);
 	}
 
+    freeMemory();
+}
+
+void wakeReferee(DaringGame game) {
+	pid_t pid = fork();
+	if (pid == 0) {
+		Table tableGame = game.getTable();
+		Referee ref(tableGame);
+		LOG_DEBUG("Arbitro creado");
+        ref.start();
+        LOG_DEBUG("Arbitro finalizó");
+		exit(0);
+	} else {
+        LOG_INFO("Se creó proceso arbitro con pid = " + std::to_string(pid));
+    }
 }
 
 void initLog() {
@@ -46,11 +64,12 @@ void initLog() {
 	log->setLevel(DEBUG);
 	log->setFile("DaringGame.log");
 	log->showInSTDOUT(true);
-	log->info("===== Nueva ejecucion de DaringGame.log =====");
+    log->showTimePrecision(true);
+	log->info("===== Nueva ejecucion de DaringGame =====");
 }
 
 void freeMemory() {
-	LOG_INFO("Free memory and exit");
+	LOG_INFO("Limpio memoria y salgo");
 	Log::deleteInstance();
 	SignalHandler::deleteInstance();
 }

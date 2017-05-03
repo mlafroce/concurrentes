@@ -21,7 +21,7 @@ add_library(concudaring
 	util/LockFile.cpp
 	util/Utils.cpp
         log/Log.cpp
-        game/Table.cpp game/Table.h)
+        game/Table.cpp game/Table.h game/Referee.cpp game/Referee.h)
 
 add_executable(tp
 	main.cpp)

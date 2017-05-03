@@ -12,7 +12,7 @@ public:
 
     static void throwError(const std::string& message);
 
-    static std::string getTimeWithFormat(std::string format = "[%Y/%m/%d %X]");
+    static std::string getTimeWithFormat(std::string format = "%Y/%m/%d %X");
     static std::string generateFileMessage(std::string file, int line);
 
     static std::vector<std::string> splitString(std::string the_string, std::string delimiter);

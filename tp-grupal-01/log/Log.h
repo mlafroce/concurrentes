@@ -16,8 +16,8 @@ enum LOG_LEVEL {
 class Log {
 private:
     LOG_LEVEL level; //Default: DEBUG
-
-    bool showInStdOut; //Defaul: False
+    bool showInStdOut; //Default: False
+    bool timePrecision; //Default: False (show microseconds)
     static Log *instance;
     static LockFile *lockFile;
 
@@ -31,6 +31,7 @@ public:
     void setLevel(LOG_LEVEL level);
     bool setFile(const std::string& file_name);
     void showInSTDOUT(bool show);
+    void showTimePrecision(bool show);
 
     void write(const std::string& message, LOG_LEVEL);
     void write(const std::string& message){ write(message,level);};
