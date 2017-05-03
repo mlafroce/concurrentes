@@ -7,13 +7,12 @@
 
 #include "game/DaringGame.h"
 #include "log/Log.h"
-#include "util/Pipe.h"
 #include "game/Referee.h"
 
 int getOptions(int argc, char** argv);
 void freeMemory();
 void initLog();
-void wakeReferee(DaringGame game);
+bool wakeReferee(DaringGame game);
 
 int main(int argc, char** argv) {
 	int numPlayers = getOptions(argc, argv);
@@ -36,16 +35,19 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	wakeReferee(game);
+	if (wakeReferee(game)) {
+        return 0;
+    }
 
 	for (int i = 0; i < numPlayers + 1; i++) {
 		waitpid(-1, 0, 0);
 	}
 
     freeMemory();
+    return 0;
 }
 
-void wakeReferee(DaringGame game) {
+bool wakeReferee(DaringGame game) {
 	pid_t pid = fork();
 	if (pid == 0) {
 		Table tableGame = game.getTable();
@@ -53,10 +55,11 @@ void wakeReferee(DaringGame game) {
 		LOG_DEBUG("Arbitro creado");
         ref.start();
         LOG_DEBUG("Arbitro finalizó");
-		exit(0);
+		return true;
 	} else {
         LOG_INFO("Se creó proceso arbitro con pid = " + std::to_string(pid));
     }
+    return false;
 }
 
 void initLog() {
