@@ -5,7 +5,7 @@
 #include "../../log/Log.h"
 //#include "../../util/Semaphore.h"
 
-#define FILE "/bin/bash"
+#define FILE "action.ipc"
 #define FILE_LOCK ".tmp.action"
 #define ACTION_ID_SEPARATOR "::"
 

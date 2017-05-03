@@ -16,7 +16,7 @@ void initLog();
 int main(int argc, char** argv) {
 	int numPlayers = getOptions(argc, argv);
 
-    initLog();
+	initLog();
 
     DaringGame game(numPlayers);
     LOG_INFO("Juego inicializado con " + std::to_string(numPlayers) + " jugadores.");
@@ -46,6 +46,7 @@ void initLog() {
 	log->setLevel(DEBUG);
 	log->setFile("DaringGame.log");
 	log->showInSTDOUT(true);
+	log->info("===== Nueva ejecucion de DaringGame.log =====");
 }
 
 void freeMemory() {

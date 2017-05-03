@@ -5,6 +5,8 @@
 #include <vector>
 
 class Utils {
+private:
+    static bool ipcDirCreated;
 public:
     static key_t generateKey(const std::string& file, const char letter);
 

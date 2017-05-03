@@ -5,9 +5,13 @@
 #include <sys/ipc.h>
 #include <cstring>
 
+#define IPC_FILES_FOLDER "ipcfiles"
+
+bool Utils::ipcDirCreated = false;
+
 void Utils::throwError(const std::string &message) {
     Log::getInstance()->error(message);
-    std::cerr << message << std::endl;
+    //std::cerr << message << std::endl;
     throw message;
 }
 
@@ -26,10 +30,42 @@ std::string Utils::generateFileMessage(std::string file, int line) {
     return file + " (line " + std::to_string(line) + ")";
 }
 
+void checkFile(const std::string& file) {
+    size_t index = file.find("/");
+    if (index != -1) {
+        THROW_UTIL("No se puede usar \"" + file + "\" para hacer ftok. No debe contener \"/\"");
+    }
+
+    size_t index2 = file.find("\\");
+    if (index2 != -1) {
+        THROW_UTIL("No se puede usar \"" + file + "\" para hacer ftok. No debe contener \"\\\"");
+    }
+}
+
+void createFile(const std::string& file) {
+    if ( access( file.c_str(), F_OK ) == -1) {
+        //File not exist
+        system(std::string("touch " + file).c_str());
+        if ( access( file.c_str(), F_OK ) == -1) {
+            THROW_UTIL("No se puede crear \"" + file + "\" para realizar ftok");
+        }
+    }
+}
+
 key_t Utils::generateKey(const std::string &file, const char letter) {
-    key_t key = ftok(file.c_str(),letter);
+    checkFile(file);
+
+    if (!ipcDirCreated) {
+        system(std::string("mkdir -p " + std::string(IPC_FILES_FOLDER)).c_str());
+        ipcDirCreated = true;
+    }
+
+    std::string file_to_ftok = std::string(IPC_FILES_FOLDER) + "/" + file;
+    createFile(file_to_ftok);
+
+    key_t key = ftok(file_to_ftok.c_str(),letter);
     if (key == -1) {
-        THROW_UTIL(std::string("Error on ftok('" + file + "', '" + letter + "'): [") + std::to_string(errno) + "] : " + std::string(strerror(errno)) );
+        THROW_UTIL(std::string("Error en ftok('" + file_to_ftok + "', '" + letter + "'): [") + std::to_string(errno) + "] : " + std::string(strerror(errno)) );
     }
     return key;
 }

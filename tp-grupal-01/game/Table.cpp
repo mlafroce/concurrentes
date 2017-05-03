@@ -3,7 +3,7 @@
 #include "Table.h"
 #include "../log/Log.h"
 
-const std::string Table::tableFilename("DaringGame.log");
+const std::string Table::tableFilename("table.ipc");
 
 Table::Table(int numPlayers) : lastCardSuit(tableFilename,'s'),lastCardRank(tableFilename,'r'),
                                lastToLastCardSuit(tableFilename,'a'),lastToLastCardRank(tableFilename,'l'),

@@ -4,8 +4,8 @@
 
 #include <cstdio>
 
-const std::string TurnManager::barrierFilename("/bin/bash");
-const std::string TurnManager::sharedMemoryFilename("/bin/bash");
+const std::string TurnManager::barrierFilename("turn_manager_barrier.ipc");
+const std::string TurnManager::sharedMemoryFilename("turn_manager_sharedmemory.ipc");
 
 TurnManager::TurnManager(int numPlayers) 
 	: numPlayers(numPlayers),
