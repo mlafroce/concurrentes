@@ -3,6 +3,7 @@
 
 #include "../../util/SharedMemory.h"
 #include "../../util/LockFile.h"
+#include "../../util/Semaphore.h"
 #include <vector>
 
 
@@ -10,6 +11,7 @@ class Action {
 private:
     SharedMemory<int> *callsActions;
     LockFile* lockFile;
+    Semaphore mutexSharedMemory;
 
     std::vector<int> getVector() const;
     std::string readFile() const;
@@ -21,8 +23,6 @@ private:
 public:
     Action(const char actionID);
     ~Action();
-
-
     void doAction(const int id);
 
     int getFirstId() const;

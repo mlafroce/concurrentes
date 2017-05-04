@@ -11,7 +11,8 @@ TurnManager::TurnManager(int numPlayers)
 	: numPlayers(numPlayers),
 	turnCounter(sharedMemoryFilename, 't'),
 	barTurnBegin(barrierFilename, 'b', numPlayers),
-	barProcessCard(barrierFilename, 'p', numPlayers) {
+	barProcessCard(barrierFilename, 'p', numPlayers),
+	barAction(barrierFilename,'a',numPlayers) {
 		LOG_INFO("Iniciado TurnManager");
 		turnCounter.write(0);
 	}
@@ -22,6 +23,10 @@ void TurnManager::waitToTurnBegin() {
 
 void TurnManager::waitToProcessCard() {
 	this->barProcessCard.wait();
+}
+
+void TurnManager::waitToDoAction() {
+	this->barAction.wait();
 }
 
 bool TurnManager::isMyTurn(const Player& player) {
@@ -38,6 +43,11 @@ void TurnManager::passTurn() {
 void TurnManager::freeBarriers() {
 	this->barTurnBegin.free();
 	this->barProcessCard.free();
+	this->barAction.free();
+}
+
+void TurnManager::freeActionBarrier() {
+	this->barAction.free();
 }
 
 int TurnManager::getNumberPlayers() {

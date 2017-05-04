@@ -9,7 +9,7 @@ LockFile::LockFile(const std::string &_name):name(_name) {
     this->flock1.l_start    = 0;
     this->flock1.l_len      = 0;
 
-    this->fd = open(this->name.c_str(), O_CREAT | O_WRONLY, 0777);
+    this->fd = open(this->name.c_str(), O_CREAT | O_RDWR, 0777);
     if (this->fd <= 0) {
         THROW_UTIL( std::string("Error on open() Lock (create): ") + std::string(strerror(errno)) );
     }
@@ -36,4 +36,9 @@ ssize_t LockFile::Write(const std::string &buffer) const {
 
 LockFile :: ~LockFile () {
     close(this->fd);
+}
+
+int LockFile::readLock() {
+    this->flock1.l_type = F_RDLCK;
+    return fcntl( this->fd,F_SETLKW,&(this->flock1) );
 }

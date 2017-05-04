@@ -9,7 +9,7 @@
 #include "Action.h"
 #include <string>
 
-class SimpleAction : Action {
+class SimpleAction : public Action {
 private:
     std::string name;
 public:

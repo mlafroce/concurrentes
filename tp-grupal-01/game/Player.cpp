@@ -1,10 +1,10 @@
 #include "Player.h"
-#include <cstdio>
-#include <vector>
-#include <unistd.h>
+
 
 #include "TurnManager.h"
 #include "../log/Log.h"
+#include "action/SimpleAction.h"
+#include "action/HandAction.h"
 
 
 Player::Player(TurnManager& turnManager) :
@@ -47,8 +47,7 @@ void Player::play() {
 void Player::playCard() {
 	Card card = this->cards.back();
 	this->cards.pop_back();
-	LOG_INFO("El jugador " + std::string(1, 48 + this->id)
-	+ " jugó " + card.toString() );
+	LOG_INFO("El jugador " + std::to_string(this->id) + " jugó " + card.toString() );
     table.pushCard(card,this->getId());
 }
 
@@ -60,55 +59,68 @@ void Player::processCard() {
 
     //sleep(1);
 
-    switch (lastCard.getNumber()) {
 
-        //1.  Si la carta es un 10, entonces todos los jugadores dicen en voz alta “Buenos d́ıas sẽnorita”.
-        case 10:
-            say("Buenos días señorita");
-            break;
+    //4.Si la carta es un 7, entonces todos los jugadores dicen en voz alta “Atrevido” y colocan su mano
+    //  sobre el piĺón que est́a en el centro de la mesa. El  ́ultimo jugador en poner la mano toma todas
+    //  las cartas del piĺon central y las agrega al suyo, poníendolas boca abajo.
+    //5.Si la carta es del mismo numero que la carta anterior, entonces todos los jugadores colocan su
+    //  mano sobre el pilon (misma mecanica que cuando sale un 7).
+    if (lastCard.getNumber() == lastToLastCard.getNumber() || lastCard.getNumber() == 7){
+        doHandAction();
+    } else {
+        switch (lastCard.getNumber()) {
 
-        //2.  Si la carta es un 11, entonces todos los jugadores dicen en voz alta “Buenas noches caballero”.
-        case 11:
-            say("Buenas noches caballero");
-            break;
+            //1.  Si la carta es un 10, entonces todos los jugadores dicen en voz alta “Buenos d́ıas sẽnorita”.
+            case 10:
+                say("Buenos días señorita");
+                break;
 
-        //3.  Si la carta es un 12, entonces todos los jugadores hacen la venia (saludo militar).
-        case 12:
-            venia();
-            break;
+            //2.  Si la carta es un 11, entonces todos los jugadores dicen en voz alta “Buenas noches caballero”.
+            case 11:
+                say("Buenas noches caballero");
+                break;
 
-        //4.  Si la carta es un 7, entonces todos los jugadores dicen en voz alta “Atrevido” y colocan su mano
-        //sobre el piĺón que est́a en el centro de la mesa. El  ́ultimo jugador en poner la mano toma todas
-        //las cartas del piĺon central y las agrega al suyo, poníendolas boca abajo.
-        case 7:
-            say("Atrevido");
-            if(putHandOnHeap()){
-                takeCardsOnTable();
-            }
-            break;
+            //3.  Si la carta es un 12, entonces todos los jugadores hacen la venia (saludo militar).
+            case 12:
+                venia();
+                break;
 
-        default:
-            LOG_INFO("El jugador " + std::to_string(getId()) + " no genera acción inmediata ya que la carta es un " + std::to_string(lastCard.getNumber()));
-            break;
-    }
-
-    //5.  Si la carta es del mismo numero que la carta anterior, entonces todos los jugadores colocan su
-    //mano sobre el pilon (misma mecanica que cuando sale un 7).
-    if (lastCard == lastToLastCard){
-        if(putHandOnHeap()){
-            takeCardsOnTable();
+            default:
+                LOG_INFO("El jugador " + std::to_string(getId()) + " no genera acción inmediata ya que la carta es un " + std::to_string(lastCard.getNumber()));
+                break;
         }
     }
+
 
     checkNumberOfCards();
 }
 
+void Player::doHandAction() {
+    //SimpleAction sayAction("Atrevido");
+    //sayAction.doAction(this->id);
+    HandAction handAction(this->turnManager.getNumberPlayers());
+    handAction.doAction(this->id);
+    std::string message = "El jugador " + std::to_string(this->id);
+    LOG_INFO(message + " dijo: \"Atrevido\" y puso la mano sobre la mesa");
+    turnManager.waitToDoAction();
+    if (handAction.allHandsPlayed() && handAction.getLastId() == this->id) {
+        LOG_INFO(message + " fue el ultimo en poner la mano sobre la mesa. Se lleva la pila de descarte");
+        takeCardsOnTable();
+    }
+}
+
 void Player::say(std::string phrase){
-    LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " dijo " + phrase );
+    SimpleAction sayAction(phrase);
+    sayAction.doAction(this->id);
+    LOG_INFO("El jugador " + std::to_string(this->id) + " dijo: \"" + phrase +  "\"");
+    this->turnManager.waitToDoAction();
+    if (sayAction.getLastId() == this->id) {
+        LOG_INFO("Todos los jugadores hicieron \"" + phrase + "\". El último es jugador " + std::to_string(this->id) );
+    }
 }
 
 void Player::venia() {
-    LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " hizo la venia" );
+    this->say("Venia");
 }
 
 bool Player::putHandOnHeap(){

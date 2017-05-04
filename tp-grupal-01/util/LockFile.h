@@ -12,6 +12,7 @@ public:
     ~LockFile();
 
     int lock();
+    int readLock();
     int free();
 
     ssize_t Write(const void* buffer, const ssize_t buffer_size) const;

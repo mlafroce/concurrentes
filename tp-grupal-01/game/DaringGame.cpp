@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "../log/Log.h"
 #include "../util/Pipe.h"
+#include <ctime>
 
 DaringGame::DaringGame(int numPlayers) :
 	turnManager(numPlayers), player(turnManager), numPlayers(numPlayers) {
@@ -60,6 +61,7 @@ void DaringGame::shuffleCards() {
 		this->initialCards.push_back(Card{CardSuit::C, i});
 		this->initialCards.push_back(Card{CardSuit::D, i});
 	}
+	srand ( (unsigned int)time(NULL) );
 	std::random_shuffle(this->initialCards.begin(), this->initialCards.end());
 }
 

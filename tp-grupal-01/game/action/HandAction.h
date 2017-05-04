@@ -4,7 +4,7 @@
 
 #include "Action.h"
 
-class HandAction : Action {
+class HandAction : public Action {
 private:
     int numberOfHands;
 public:

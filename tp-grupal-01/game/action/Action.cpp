@@ -3,13 +3,12 @@
 #include "Action.h"
 
 #include "../../log/Log.h"
-//#include "../../util/Semaphore.h"
 
 #define FILE "action.ipc"
 #define FILE_LOCK ".tmp.action"
 #define ACTION_ID_SEPARATOR "::"
 
-Action::Action(const char id) : actionID(id) {
+Action::Action(const char id) : actionID(id), mutexSharedMemory(FILE,'s',1) {
     this->temporalFileName = std::string(FILE_LOCK) + std::to_string(this->actionID);
     callsActions = new SharedMemory<int>(FILE,this->actionID);
     if (this->isEmpty() && callsActions->numberOfAttachedProcesses() == 1) {
@@ -21,20 +20,18 @@ Action::Action(const char id) : actionID(id) {
 Action::~Action() {
     delete lockFile;
     if (callsActions->numberOfAttachedProcesses() == 1) {
+        LOG_DEBUG("Acción ("+ std::to_string(this->actionID) +") finalizada");
         this->end();
     }
     delete callsActions;
 }
 
 std::string Action::readFile() const {
-    //TODO: [Se necesita un semaforo?]
-    //Semaphore semaphore(FILE,'s',1);
-
-    //semaphore.wait();
+    lockFile->readLock();
         std::ifstream ifs(this->temporalFileName);
         std::string plainActions( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>() ) );
         ifs.close();
-    //semaphore.signal();
+    lockFile->free();
 
     return plainActions;
 }
@@ -64,7 +61,9 @@ int Action::count() const {
 void Action::doAction(const int id) {
     std::string callActionString = ((this->count() > 0) ? ACTION_ID_SEPARATOR : "") + std::to_string(id);
     this->writeInLock(callActionString);
+    mutexSharedMemory.wait();
     callsActions->write(callsActions->read() + 1);
+    mutexSharedMemory.signal();
 }
 
 int Action::getFirstId() const {

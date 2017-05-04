@@ -40,6 +40,8 @@ public:
 
     void venia();
 
+	void doHandAction();
+
     /**
 	 * Pone la mano en la pila y retorna true si es el ultimo
 	 */

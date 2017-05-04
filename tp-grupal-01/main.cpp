@@ -53,6 +53,7 @@ bool wakeReferee(DaringGame game) {
 		Table tableGame = game.getTable();
 		Referee ref(tableGame);
 		LOG_DEBUG("Arbitro creado");
+		ref.setInterval(1);
         ref.start();
         LOG_DEBUG("Arbitro finalizó");
 		return true;

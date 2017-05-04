@@ -26,10 +26,18 @@ public:
 	 * Activa la barrera entre previa a procesar la carta jugada
 	 */
 	void waitToProcessCard();
+
+	/**
+	 * Activa la barrera para realizar accion.
+	 */
+	void waitToDoAction();
+
 	/**
 	 * Destraba las barreras
 	 */
 	void freeBarriers();
+
+	void freeActionBarrier();
 
     int getNumberPlayers();
 private:
@@ -39,6 +47,7 @@ private:
 	SharedMemory<int> turnCounter;
 	BarrierSimple barTurnBegin;
 	BarrierSimple barProcessCard;
+	BarrierSimple barAction;
 };
 
 #endif // TURNMANAGER_H

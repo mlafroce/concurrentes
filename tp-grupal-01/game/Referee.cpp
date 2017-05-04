@@ -10,7 +10,7 @@ Referee::~Referee() {}
 
 void Referee::setInterval(const int newInterval) {
     if (newInterval > 0) {
-        this->interval = (long int)interval*1000;
+        this->interval = interval*1000;
     }
 }
 
@@ -32,7 +32,8 @@ void Referee::run() {
 
 void Referee::showSummary() {
     std::string message = "\n[REFEREE STATS]\n\t";
-    message += "Ultima carta juagada: " + this->table.getLastCard().toString();
+    Card lastCard = this->table.getLastCard();
+    message += (lastCard.getNumber() > 0) ? "Última carta juagada: " + lastCard.toString() : "Aún no se ha jugado carta";
     message += "\n\t";
     message += "+------------+--------+\n\t";
     message += "| ID Jugador | Cartas |\n\t";
