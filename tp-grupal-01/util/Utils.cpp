@@ -4,6 +4,7 @@
 #include <ctime>
 #include <sys/ipc.h>
 #include <cstring>
+#include <sys/time.h>
 
 #define IPC_FILES_FOLDER "ipcfiles"
 
@@ -23,6 +24,20 @@ std::string Utils::getTimeWithFormat(std::string format) {
     const char* format_to_strf = format.c_str();
     strftime(buf, sizeof(buf), format_to_strf, &time_struct);
     return std::string(buf);
+}
+
+std::string Utils::getTimeWithFormatAndPrecision(std::string format) {
+    timeval curTime;
+    gettimeofday(&curTime, NULL);
+    int milli = (int)(curTime.tv_usec);
+
+    char buffer [80];
+    strftime(buffer, 80, format.c_str(), localtime(&curTime.tv_sec));
+
+    char currentTime[84] = "";
+    sprintf(currentTime, "%s.%d", buffer, milli);
+
+    return std::string(currentTime);
 }
 
 std::string Utils::generateFileMessage(std::string file, int line) {

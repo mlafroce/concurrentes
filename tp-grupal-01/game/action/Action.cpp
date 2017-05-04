@@ -8,7 +8,7 @@
 #define FILE_LOCK ".tmp.action"
 #define ACTION_ID_SEPARATOR "::"
 
-Action::Action(const char id) : actionID(id), mutexSharedMemory(FILE,'s',1) {
+Action::Action(const char id) : actionID(id), mutexSharedMemory(FILE,id,1) {
     this->temporalFileName = std::string(FILE_LOCK) + std::to_string(this->actionID);
     callsActions = new SharedMemory<int>(FILE,this->actionID);
     if (this->isEmpty() && callsActions->numberOfAttachedProcesses() == 1) {

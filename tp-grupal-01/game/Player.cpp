@@ -96,13 +96,18 @@ void Player::processCard() {
 }
 
 void Player::doHandAction() {
-    //SimpleAction sayAction("Atrevido");
-    //sayAction.doAction(this->id);
+    std::string message = "El jugador " + std::to_string(this->id);
+
+    SimpleAction sayAction("Atrevido!");
+    sayAction.doAction(this->id);
+    LOG_INFO(message + " dijo: \"Atrevido!\"");
+
     HandAction handAction(this->turnManager.getNumberPlayers());
     handAction.doAction(this->id);
-    std::string message = "El jugador " + std::to_string(this->id);
-    LOG_INFO(message + " dijo: \"Atrevido\" y puso la mano sobre la mesa");
+    LOG_INFO(message + " puso la mano sobre la mesa");
+
     turnManager.waitToDoAction();
+
     if (handAction.allHandsPlayed() && handAction.getLastId() == this->id) {
         LOG_INFO(message + " fue el ultimo en poner la mano sobre la mesa. Se lleva la pila de descarte");
         takeCardsOnTable();
