@@ -1,7 +1,3 @@
-//
-// Created by tomi on 30/04/17.
-//
-
 #include "HandAction.h"
 
 HandAction::HandAction(int _numberOfHands) : Action('h'),numberOfHands(_numberOfHands) {}

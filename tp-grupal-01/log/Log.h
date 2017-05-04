@@ -1,7 +1,3 @@
-//
-// Created by tomi on 22/04/17.
-//
-
 #ifndef CONCURRENTES_LOG_H
 #define CONCURRENTES_LOG_H
 

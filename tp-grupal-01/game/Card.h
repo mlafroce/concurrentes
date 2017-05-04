@@ -1,5 +1,6 @@
 #ifndef CARD_H
 #define CARD_H
+
 #include <string>
 
 enum CardSuit {A, B, C, D};
