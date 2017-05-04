@@ -1,21 +1,20 @@
 #include <iostream>
 #include <cstdlib>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 
 #define WAIT_TIME 10
 
 long int random() {
-	srand(getpid());
+	srand((unsigned int)getpid());
 	long int result = rand() % WAIT_TIME;
 	return result;
 }
 
 int process() {
-	int sleep_time = random();
+	int sleep_time = (int)random();
 	std::cout << "Voy a dormir " << sleep_time << " segundos." << std::endl;
-	sleep(sleep_time);
+	sleep((unsigned int)sleep_time);
 	return sleep_time;
 }
 

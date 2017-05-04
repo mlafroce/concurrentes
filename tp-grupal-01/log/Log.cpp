@@ -1,5 +1,4 @@
 #include "Log.h"
-#include "../util/Utils.h"
 
 #include <iostream>
 #include <map>
@@ -79,7 +78,7 @@ void Log::write(const std::string &message, LOG_LEVEL logLevel) {
     if (logLevel <= this->level) {
         std::string miliseconds = (this->timePrecision) ? ("." + calculateMiliseconds()) : "";
         std::string log_message = "[" + Utils::getTimeWithFormat() + miliseconds + "][" +
-			LEVEL_STRING[logLevel] + "] " + "[PID: " + std::to_string(getpid()) +
+			LEVEL_STRING[logLevel] + "]" + "[PID: " + std::to_string(getpid()) +
 			"] " + message + "\n";
 
         lockFile->lock();
@@ -87,7 +86,7 @@ void Log::write(const std::string &message, LOG_LEVEL logLevel) {
         lockFile->free();
 
         if (this->showInStdOut){
-            std::string log_message_colored = "[" + Utils::getTimeWithFormat() + miliseconds + "][" + LEVEL_STRING_COLOR[logLevel] + "] " +
+            std::string log_message_colored = "[" + Utils::getTimeWithFormat() + miliseconds + "][" + LEVEL_STRING_COLOR[logLevel] + "]" +
 			"[PID: " + std::to_string(getpid()) + "] " +  message;
             std::cout << log_message_colored << std::endl;
         }

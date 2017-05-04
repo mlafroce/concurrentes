@@ -11,6 +11,9 @@ class TurnManager;
 class Player {
 public:
 	Player(TurnManager& turnManager);
+
+	void setId(const int ID);
+
 	/**
 	 * Inicializa algunos atributos y arranca el juego
 	 */
@@ -41,11 +44,6 @@ public:
     void venia();
 
 	void doHandAction();
-
-    /**
-	 * Pone la mano en la pila y retorna true si es el ultimo
-	 */
-    bool putHandOnHeap();
 
 	Table getTable() const;
 private:

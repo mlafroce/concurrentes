@@ -20,7 +20,7 @@ Action::Action(const char id) : actionID(id), mutexSharedMemory(FILE,'s',1) {
 Action::~Action() {
     delete lockFile;
     if (callsActions->numberOfAttachedProcesses() == 1) {
-        LOG_DEBUG("Acción ("+ std::to_string(this->actionID) +") finalizada");
+        LOG_INFO("Acción ("+ std::to_string(this->actionID) +") finalizada");
         mutexSharedMemory.Delete();
         this->end();
     }

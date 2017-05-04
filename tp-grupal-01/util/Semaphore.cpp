@@ -48,7 +48,7 @@ int Semaphore :: p () const {
 }
 
 int Semaphore :: v() const {
-	v(1);
+	return v(1);
 }
 
 int Semaphore :: v(int value) const {

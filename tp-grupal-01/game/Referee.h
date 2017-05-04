@@ -7,7 +7,7 @@
 class Referee {
 private:
     bool running;
-    long int interval;
+    useconds_t interval;
     Table table;
 public:
     Referee(Table aTable);

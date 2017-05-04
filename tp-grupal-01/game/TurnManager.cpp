@@ -2,8 +2,6 @@
 #include "Player.h"
 #include "../log/Log.h"
 
-#include <cstdio>
-
 const std::string TurnManager::barrierFilename("turn_manager_barrier.ipc");
 const std::string TurnManager::sharedMemoryFilename("turn_manager_sharedmemory.ipc");
 

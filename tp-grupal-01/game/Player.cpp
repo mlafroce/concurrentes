@@ -13,7 +13,7 @@ Player::Player(TurnManager& turnManager) :
 void Player::start(int id) {
 	this->id = id;
 	this->running = true;
-	LOG_INFO("Iniciando la mesa del jugador " + std::string(1, 48 + this->id));
+	LOG_INFO("Iniciando la mesa del jugador " + std::to_string(this->id));
     table.setNumberOfCards(this->getId(), (int) cards.size());
     play();
 }
@@ -123,15 +123,9 @@ void Player::venia() {
     this->say("Venia");
 }
 
-bool Player::putHandOnHeap(){
-    LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " puso la mano en la pila" );
-    return table.putHandOnHeap(this->getId());
-}
-
 void Player::addCards(const std::vector<Card>& cards) {
 	this->cards.insert(this->cards.end(), cards.begin(), cards.end());
 }
-
 
 int Player::getId() const {
 	return this->id;
@@ -152,4 +146,8 @@ void Player::checkNumberOfCards() {
 
 Table Player::getTable() const {
     return this->table;
+}
+
+void Player::setId(const int ID) {
+    this->id = ID;
 }

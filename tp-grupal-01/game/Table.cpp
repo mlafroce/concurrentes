@@ -1,7 +1,7 @@
+#include "Table.h"
+
 #include <cstring>
 #include <iostream>
-#include "Table.h"
-#include "../log/Log.h"
 
 const std::string Table::tableFilename("table.ipc");
 
@@ -71,31 +71,10 @@ void Table::setNumberOfCards(int playerID, int cant) {
 }
 
 Table::~Table() {
-    //delete(playersNumberOfCards);
-    //delete(cardsOnTheTable);
 }
 
 Card Table::getLastToLastCard() {
     return Card(lastToLastCardSuit.read(),lastToLastCardRank.read());
-}
-
-bool Table::putHandOnHeap(int playerID) {
-    lastPlayerWithHandInHeap.write(playerID);
-    int cantPlayers = numPlayersWithHandInHeap.read();
-    cantPlayers += 1;
-    numPlayersWithHandInHeap.write(cantPlayers);
-
-
-    LOG_INFO(std::to_string(cantPlayers) + " pusieron la mano en el pilón.");
-
-    //si la cantidad de juadores con mano en el pilon es igual a la cantidad de jugadores es por que es el ultimo.
-    if (cantPlayers == playersNumberOfCards.size()){
-        LOG_INFO("El jugador " + std::to_string(playerID) + " fue el último en poner la mano en el pilón.");
-        numPlayersWithHandInHeap.write(0);
-        return true;
-    }
-
-    return false;
 }
 
 int Table::winner() {
@@ -111,7 +90,7 @@ void Table::winned(int playerID) {
 std::map<std::string,int> Table::stats() {
     std::map<std::string,int> stats;
     for (int i = 0; i < playersNumberOfCards.size(); ++i) {
-        stats[std::to_string(i)] =playersNumberOfCards[i].read();
+        stats[std::to_string(i)] = this->getNumberOfCards(i);
     }
     int winner = winnerPlayerID.read();
     if (winner >= 0){

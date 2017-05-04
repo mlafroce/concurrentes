@@ -33,7 +33,6 @@ private:
 	TurnManager turnManager;
 	Player player;
 	int numPlayers;
-	bool status;
 };
 
 #endif // DARINGGAME_H

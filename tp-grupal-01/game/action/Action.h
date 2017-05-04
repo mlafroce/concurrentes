@@ -22,7 +22,7 @@ private:
 
 public:
     Action(const char actionID);
-    ~Action();
+    virtual ~Action();
     void doAction(const int id);
 
     int getFirstId() const;

@@ -24,8 +24,6 @@ public:
 
     void setNumberOfCards(int playerID, int cant);
 
-    bool putHandOnHeap(int playerID);
-
     /**
      * Si hay ganador retorna el ID, caso contrario -1
      */

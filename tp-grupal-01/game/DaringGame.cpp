@@ -1,11 +1,8 @@
 #include "DaringGame.h"
 
 #include <algorithm>
-#include "Card.h"
-#include "Player.h"
-#include "../log/Log.h"
-#include "../util/Pipe.h"
 #include <ctime>
+#include "../log/Log.h"
 
 DaringGame::DaringGame(int numPlayers) :
 	turnManager(numPlayers), player(turnManager), numPlayers(numPlayers) {
@@ -17,6 +14,7 @@ DaringGame::~DaringGame() {}
 
 int DaringGame::start(int id, Pipe& cardStream) {
 	this->initialCards.clear();
+	player.setId(id);
 	receiveCards(cardStream);
 	player.start(id);
 	return 0;
@@ -32,12 +30,12 @@ void DaringGame::receiveCards(Pipe& cardStream) {
 	cardStream.read(&numCards, sizeof(int));
 	std::vector<Card> newCards(numCards, defaultCard);
 	cardStream.read(newCards.data(), sizeof(defaultCard) * numCards);
-	LOG_INFO("Player id: " + std::to_string(player.getId()) + std::string(" recibió ") + std::to_string(numCards) + " cartas");
     std::string cards;
-    for (Card &card : newCards) {
-        cards += "\n\t " + card.toString();
-    }
-    LOG_DEBUG("Player id: " + std::to_string(player.getId()) + "\n\tCartas recibidas:" + cards);
+	for (Card &card : newCards) {
+		cards += "\n\t " + card.toString();
+	}
+	LOG_INFO("Jugador " + std::to_string(player.getId()) + std::string(" recibió ") + std::to_string(numCards) + " cartas");
+	LOG_DEBUG("Player id: " + std::to_string(player.getId()) + "\n\tCartas recibidas:" + cards);
 	player.addCards(newCards);
 }
 
