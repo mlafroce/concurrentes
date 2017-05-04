@@ -4,7 +4,14 @@ BarrierSimple::BarrierSimple ( const std::string& name, char salt, int nWaiting 
     : nWaiting ( nWaiting ), count (name, salt),
       countMutex (name, salt, 1 ), turnstile (name, -salt, 0 ) {
 		this->count.write(0);
-	}
+}
+
+BarrierSimple::~BarrierSimple() {
+    if (count.numberOfAttachedProcesses() == 1) {
+        countMutex.Delete();
+        turnstile.Delete();
+    }
+}
 
 void BarrierSimple::wait() {
     this->countMutex.wait();

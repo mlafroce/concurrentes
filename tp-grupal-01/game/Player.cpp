@@ -26,7 +26,7 @@ void Player::play() {
 	LOG_INFO("Arrancando el jugador " + std::string(1, 48 + this->id));
 	while (this->running) {
         turnManager.waitToTurnBegin();
-        if (table.winner() > 0){
+        if (table.winner() >= 0){
             stop();
             continue;
         }

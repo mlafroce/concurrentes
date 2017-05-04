@@ -7,6 +7,7 @@
 class BarrierSimple {
 public:
 	BarrierSimple(const std::string& name, char salt, int nWaiting);
+	~BarrierSimple();
 	void wait();
 	void free();
 private:

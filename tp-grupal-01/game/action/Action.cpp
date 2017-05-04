@@ -21,6 +21,7 @@ Action::~Action() {
     delete lockFile;
     if (callsActions->numberOfAttachedProcesses() == 1) {
         LOG_DEBUG("Acción ("+ std::to_string(this->actionID) +") finalizada");
+        mutexSharedMemory.Delete();
         this->end();
     }
     delete callsActions;

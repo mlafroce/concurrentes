@@ -16,7 +16,7 @@ Semaphore::~Semaphore() {
 }
 
 int Semaphore::init() const {
-	LOG_INFO("Iniciando semaforo con id: " + std::to_string(this->id));
+	LOG_DEBUG("Iniciando semaforo con id: " + std::to_string(this->id));
 	union semnum {
 		int val;
 		struct semid_ds* buf;

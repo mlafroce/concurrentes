@@ -114,7 +114,7 @@ std::map<std::string,int> Table::stats() {
         stats[std::to_string(i)] =playersNumberOfCards[i].read();
     }
     int winner = winnerPlayerID.read();
-    if (winner > 0){
+    if (winner >= 0){
         stats["winner"] = winner;
     }
 
