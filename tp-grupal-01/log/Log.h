@@ -4,6 +4,7 @@
 #include <string>
 #include "../util/LockFile.h"
 #include "../util/Utils.h"
+#include "../util/Semaphore.h"
 
 enum LOG_LEVEL {
     ERROR, WARNING, INFO, DEBUG
@@ -16,6 +17,9 @@ private:
     bool timePrecision; //Default: False (show microseconds)
     static Log *instance;
     static LockFile *lockFile;
+
+    static Semaphore* mutexSTDOUT;
+    static void deleteMutex();
 
     Log();
     ~Log();

@@ -97,3 +97,12 @@ std::vector<std::string> Utils::splitString(std::string the_string, std::string 
     }
     return splitVector;
 }
+
+int Utils::randomInt(const int a, const int b) {
+    if (a >= b) {
+        THROW_UTIL( "Parametros invalidos en Utils::randomInt(a = " + std::to_string(a) + ",b = " + std::to_string(b) + "): 'a' debe ser menor a 'b'" );
+    }
+    int maxValue = (b - a) + 1;
+    srand ( (unsigned int)time(NULL) );
+    return a + rand() % maxValue; // In the range a to b (inclusive)
+}

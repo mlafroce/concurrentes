@@ -3,8 +3,11 @@
 #include <iostream>
 #include <map>
 
+#define FILE_LOG_IPCS "log.semaphore.ipc"
+
 Log* Log::instance = NULL;
 LockFile* Log::lockFile = NULL;
+Semaphore* Log::mutexSTDOUT = NULL;
 
 static std::map<LOG_LEVEL,std::string> LEVEL_STRING_COLOR = {
         {DEBUG, "DEBUG"},
@@ -24,6 +27,7 @@ Log::Log() {
     showInStdOut = false;
     level = DEBUG;
     timePrecision = false;
+    mutexSTDOUT = NULL;
 }
 
 Log::~Log() {
@@ -31,6 +35,7 @@ Log::~Log() {
         lockFile->free();
         delete lockFile;
     }
+    mutexSTDOUT = NULL;
     lockFile = NULL;
 }
 
@@ -42,6 +47,7 @@ Log* Log::getInstance() {
 }
 
 void Log::deleteInstance() {
+    Log::deleteMutex();
     delete instance;
     instance = NULL;
 }
@@ -55,7 +61,22 @@ bool Log::setFile(const std::string &file_name) {
     return (lockFile != NULL);
 }
 
+void Log::deleteMutex() {
+    if (mutexSTDOUT != NULL) {
+        mutexSTDOUT->Delete();
+        delete mutexSTDOUT;
+    }
+    mutexSTDOUT = NULL;
+}
+
 void Log::showInSTDOUT(bool show) {
+    if (show) {
+        if (mutexSTDOUT == NULL) {
+            mutexSTDOUT = new Semaphore(FILE_LOG_IPCS,'z',1);
+        }
+    } else {
+        Log::deleteMutex();
+    }
     this->showInStdOut = show;
 }
 
@@ -69,6 +90,10 @@ void Log::write(const std::string &message, LOG_LEVEL logLevel) {
 			LEVEL_STRING[logLevel] + "]" + "[PID: " + std::to_string(getpid()) +
 			"] " + message + "\n";
 
+        if (this->showInStdOut) {
+            mutexSTDOUT->wait();
+        }
+
         lockFile->lock();
         lockFile->Write(log_message.c_str(),log_message.size());
         lockFile->free();
@@ -76,7 +101,8 @@ void Log::write(const std::string &message, LOG_LEVEL logLevel) {
         if (this->showInStdOut){
             std::string log_message_colored = "[" + time + "][" + LEVEL_STRING_COLOR[logLevel] + "]" +
 			"[PID: " + std::to_string(getpid()) + "] " +  message;
-            std::cout << log_message_colored << std::endl;
+                std::cout << log_message_colored << std::endl;
+            mutexSTDOUT->signal();
         }
     }
 }

@@ -6,6 +6,7 @@
 #include "Card.h"
 #include "../util/SharedMemory.h"
 #include "../util/Pipe.h"
+#include "../util/Semaphore.h"
 
 class Table {
 public:
@@ -36,20 +37,21 @@ public:
 
     std::map<std::string,int> stats();
 
+    void free();
+
 private:
     static const std::string tableFilename;
 
     //Last Card
-    SharedMemory<char> lastCardRank;
-    SharedMemory<CardSuit> lastCardSuit;
+    SharedMemory<SerializedCard> lastCard;
 
     //Last to Last Card
-    SharedMemory<char> lastToLastCardRank;
-    SharedMemory<CardSuit> lastToLastCardSuit;
+    SharedMemory<SerializedCard> lastToLastCard;
 
-    //Manos en el pilon de cartas
-    SharedMemory<int> lastPlayerWithHandInHeap;
-    SharedMemory<int> numPlayersWithHandInHeap;
+    //Mutex to get stats without conflicts (may be asynchronous)
+    Semaphore mutexTableInformation;
+
+    SharedMemory<int> winnerPlayerID;
 
     //Cantidad de cartas de cada jugador
     std::vector<SharedMemory<int>> playersNumberOfCards;
@@ -57,8 +59,6 @@ private:
     //Pipe con las cartas en la mesa y cantidad en memoria compartida
     Pipe* cardsOnTable;
     SharedMemory<int> numCardsOnTable;
-
-    SharedMemory<int> winnerPlayerID;
 };
 
 

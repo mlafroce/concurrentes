@@ -17,6 +17,8 @@ public:
     static std::string generateFileMessage(std::string file, int line);
 
     static std::vector<std::string> splitString(std::string the_string, std::string delimiter);
+
+    static int randomInt(const int a = 0, const int b = 1000);
 };
 
 #define THROW_UTIL(message) Utils::throwError( Utils::generateFileMessage(__FILE__,__LINE__) + ": " + message);

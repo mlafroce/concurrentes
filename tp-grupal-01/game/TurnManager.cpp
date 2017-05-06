@@ -11,8 +11,9 @@ TurnManager::TurnManager(int numPlayers)
 	barTurnBegin(barrierFilename, 'b', numPlayers),
 	barProcessCard(barrierFilename, 'p', numPlayers),
 	barAction(barrierFilename,'a',numPlayers) {
-		LOG_INFO("Iniciado TurnManager");
-		turnCounter.write(0);
+		int firstTurn = Utils::randomInt(0,numPlayers-1);
+		LOG_INFO("Iniciado TurnManager, primer turno para el Jugador " + std::to_string(firstTurn));
+		turnCounter.write( firstTurn );
 	}
 
 void TurnManager::waitToTurnBegin() {
@@ -41,10 +42,6 @@ void TurnManager::passTurn() {
 void TurnManager::freeBarriers() {
 	this->barTurnBegin.free();
 	this->barProcessCard.free();
-	this->barAction.free();
-}
-
-void TurnManager::freeActionBarrier() {
 	this->barAction.free();
 }
 

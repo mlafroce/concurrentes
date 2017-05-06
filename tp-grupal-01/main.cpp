@@ -10,14 +10,14 @@
 #include "game/Referee.h"
 
 int getOptions(int argc, char** argv);
-void freeMemory();
+void freeMemory(DaringGame game);
 void initLog();
 bool wakeReferee(DaringGame game);
 
 int main(int argc, char** argv) {
 	int numPlayers = getOptions(argc, argv);
 
-	initLog();
+    initLog();
 
     DaringGame game(numPlayers);
 
@@ -28,8 +28,7 @@ int main(int argc, char** argv) {
 		Pipe cardPipe;
 		pid_t pid = fork();
 		if (pid == 0) {
-			int result = game.start(i, cardPipe);
-			return result;
+			return game.start(i, cardPipe);
 		} else {
 			game.sendCards(i, cardPipe);
 		}
@@ -43,7 +42,7 @@ int main(int argc, char** argv) {
 		waitpid(-1, 0, 0);
 	}
 
-    freeMemory();
+    freeMemory(game);
     return 0;
 }
 
@@ -65,15 +64,16 @@ bool wakeReferee(DaringGame game) {
 
 void initLog() {
 	Log* log = Log::getInstance();
-	log->setLevel(INFO);
+	log->setLevel(DEBUG);
 	log->setFile("DaringGame.log");
 	log->showInSTDOUT(true);
     log->showTimePrecision(true);
 	log->info("===== Nueva ejecucion de DaringGame =====");
 }
 
-void freeMemory() {
+void freeMemory(DaringGame game) {
 	LOG_INFO("Limpio memoria y salgo");
+	game.free();
 	Log::deleteInstance();
 	SignalHandler::deleteInstance();
 }

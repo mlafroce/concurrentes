@@ -37,8 +37,6 @@ public:
 	 */
 	void freeBarriers();
 
-	void freeActionBarrier();
-
     int getNumberPlayers();
 private:
 	static const std::string barrierFilename;

@@ -25,6 +25,11 @@ int LockFile::free() {
     return fcntl(this->fd,F_SETLK,&(this->flock1));
 }
 
+int LockFile::readFree() {
+    this->flock1.l_type = F_UNLCK;
+    return fcntl(0,F_SETLK,&(this->flock1));
+}
+
 ssize_t LockFile::Write(const void* buffer,const ssize_t buffer_size) const {
     lseek(this->fd,0,SEEK_END);
     return write(this->fd,buffer,(size_t)buffer_size);
@@ -40,5 +45,5 @@ LockFile :: ~LockFile () {
 
 int LockFile::readLock() {
     this->flock1.l_type = F_RDLCK;
-    return fcntl( this->fd,F_SETLKW,&(this->flock1) );
+    return fcntl( 0,F_SETLKW,&(this->flock1) );
 }

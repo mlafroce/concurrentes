@@ -27,6 +27,8 @@ public:
 	void sendCards(int id, Pipe& cardPipe);
 
 	Table getTable() const;
+
+	void free();
 private:
     void shuffleCards();
 	std::vector<Card> initialCards;

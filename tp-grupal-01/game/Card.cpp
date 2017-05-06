@@ -2,6 +2,8 @@
 #include <sstream>
 
 const char Card::MaxCardRank = 12;
+const Card Card::DefaultCard(A,0);
+const SerializedCard Card::DefaultSerializedCard{A,0};
 
 Card::Card(CardSuit suit, char rank) :
 	suit(suit), rank(rank){}
@@ -36,4 +38,28 @@ CardSuit Card::getSuite() const {
 
 int Card::getNumber() const {
 	return (int)rank;
+}
+
+Card Card::toCard(const SerializedCard& sCard) {
+	return Card{sCard.suit, sCard.rank};
+}
+
+std::vector<Card> Card::toCard( const std::vector<SerializedCard> &sCards ) {
+	std::vector<Card> cards;
+	for (SerializedCard sCard : sCards) {
+		cards.push_back( Card::toCard(sCard) );
+	}
+	return cards;
+}
+
+SerializedCard Card::Serialize(const Card& card) {
+	return SerializedCard{card.getSuite(), card.getRank()};
+}
+
+std::vector<SerializedCard> Card::Serialize( const std::vector<Card> &cards ) {
+	std::vector<SerializedCard> sCards;
+	for (Card card : cards) {
+		sCards.push_back( Card::Serialize(card) );
+	}
+	return sCards;
 }

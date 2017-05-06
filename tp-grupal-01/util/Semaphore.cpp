@@ -9,6 +9,7 @@ Semaphore :: Semaphore (const std::string& name, char salt, const int initValue)
 	if (this->id < 0){
 		THROW_UTIL( std::string("Error en semget() (crear): ") + std::string(strerror(errno)) );
 	}
+	LOG_DEBUG("Iniciando semaforo con id: " + std::to_string(this->id) + " (" + name + "," + std::to_string(salt) +")");
 	this->init();
 }
 
@@ -16,7 +17,6 @@ Semaphore::~Semaphore() {
 }
 
 int Semaphore::init() const {
-	LOG_DEBUG("Iniciando semaforo con id: " + std::to_string(this->id));
 	union semnum {
 		int val;
 		struct semid_ds* buf;

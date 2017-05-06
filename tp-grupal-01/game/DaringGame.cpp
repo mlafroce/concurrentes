@@ -26,27 +26,34 @@ void DaringGame::stop() {
 
 void DaringGame::receiveCards(Pipe& cardStream) {
 	int numCards = 0;
-	Card defaultCard(A, 0);
 	cardStream.read(&numCards, sizeof(int));
-	std::vector<Card> newCards(numCards, defaultCard);
-	cardStream.read(newCards.data(), sizeof(defaultCard) * numCards);
-    std::string cards;
+
+	std::vector<SerializedCard> newSerializedCards((unsigned long)numCards, Card::DefaultSerializedCard);
+	cardStream.read(newSerializedCards.data(), sizeof(Card::DefaultSerializedCard) * numCards);
+    std::vector<Card> newCards = Card::toCard(newSerializedCards);
+
+	std::string cards;
 	for (Card &card : newCards) {
 		cards += "\n\t " + card.toString();
 	}
 	LOG_INFO("Jugador " + std::to_string(player.getId()) + std::string(" recibió ") + std::to_string(numCards) + " cartas");
 	LOG_DEBUG("Player id: " + std::to_string(player.getId()) + "\n\tCartas recibidas:" + cards);
+
 	player.addCards(newCards);
 }
 
 void DaringGame::sendCards(int id, Pipe& cardStream) {
-	int cardsToSend = this->initialCards.size() / this->numPlayers;
+	//Calculate Player index in cards
+	int cardsToSend = (int)(this->initialCards.size() / this->numPlayers);
 	if (id == (this->numPlayers - 1)) {
 		cardsToSend += this->initialCards.size() % this->numPlayers;
 	}
-	int firstCard = this->initialCards.size() / this->numPlayers;
+	int firstCard = (int)(this->initialCards.size() / this->numPlayers);
 	firstCard *= id;
-	Card* cardBuff = &this->initialCards[firstCard];
+
+	//Serialize and send
+	std::vector<SerializedCard> sInitialCards = Card::Serialize( this->initialCards );
+	SerializedCard* cardBuff = &sInitialCards[firstCard];
 	cardStream.write(&cardsToSend, sizeof(cardsToSend));
 	cardStream.write(cardBuff, sizeof(*cardBuff) * cardsToSend);
 }
@@ -65,4 +72,9 @@ void DaringGame::shuffleCards() {
 
 Table DaringGame::getTable() const {
     return player.getTable();
+}
+
+void DaringGame::free() {
+	player.free();
+	this->initialCards.clear();
 }

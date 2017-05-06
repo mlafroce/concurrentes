@@ -3,62 +3,58 @@
 #include <cstring>
 #include <iostream>
 
+#define FILE_IPCS "tableinformation.semaphore.ipc"
+
 const std::string Table::tableFilename("table.ipc");
 
-Table::Table(int numPlayers) : lastCardSuit(tableFilename,'s'),lastCardRank(tableFilename,'r'),
-                               lastToLastCardSuit(tableFilename,'a'),lastToLastCardRank(tableFilename,'l'),
+Table::Table(int numPlayers) : lastCard(tableFilename,'l'),
+                               lastToLastCard(tableFilename,'m'),
                                numCardsOnTable(tableFilename,'n'),cardsOnTable(new Pipe()),
-                               lastPlayerWithHandInHeap(tableFilename,'p'),numPlayersWithHandInHeap(tableFilename,'m'),
-                               winnerPlayerID(tableFilename,'w'){
+                               winnerPlayerID(tableFilename,'w'),
+                               mutexTableInformation(FILE_IPCS,'s',1){
     for (int i = 0; i < numPlayers ; ++i) {
         playersNumberOfCards.push_back(SharedMemory<int>(tableFilename,i));
     }
-    lastCardRank.write(-1);
-    lastCardSuit.write(A);
+    mutexTableInformation.wait();
+        lastCard.write(Card::DefaultSerializedCard);
+        winnerPlayerID.write(-1);
+    mutexTableInformation.signal();
     numCardsOnTable.write(0);
-    lastToLastCardRank.write(-1);
-    lastToLastCardSuit.write(A);
-    lastPlayerWithHandInHeap.write(-1);
-    numPlayersWithHandInHeap.write(0);
-    winnerPlayerID.write(-1);
+    lastToLastCard.write(Card::DefaultSerializedCard);
 }
 
 Card Table::getLastCard() {
-    return Card(lastCardSuit.read(),lastCardRank.read());
+    return Card::toCard(lastCard.read());
 }
 
 std::vector<Card> Table::takeAllCards(int playerID) {
     int cantCards = numCardsOnTable.read();
-    Card defaultCard(A, 0);
-    std::vector<Card> cards(cantCards, defaultCard);
-    cardsOnTable->read(cards.data(), sizeof(defaultCard) * cantCards);
+
+    std::vector<SerializedCard> sCards((unsigned long)cantCards, Card::DefaultSerializedCard);
+    cardsOnTable->read(sCards.data(), sizeof(Card::DefaultSerializedCard) * cantCards);
     numCardsOnTable.write(0);
 
-    SharedMemory<int> shmem = playersNumberOfCards[playerID];
-    int numCards = shmem.read();
-    numCards += cards.size();
-    shmem.write(numCards);
+    std::vector<Card> cards = Card::toCard(sCards);
+
+    this->setNumberOfCards(playerID,(int)(playersNumberOfCards[playerID].read() + cards.size()));
 
     return cards;
 }
 
 void Table::pushCard(Card card,int playerID) {
-    cardsOnTable->write(&card,sizeof(card));
-    numCardsOnTable.write(numCardsOnTable.read()+1);
+    SerializedCard sCard = Card::Serialize(card);
+    cardsOnTable->write(&sCard,sizeof(sCard));
+    numCardsOnTable.write(numCardsOnTable.read() + 1);
 
-    CardSuit suite = lastCardSuit.read();
-    int rank = lastCardRank.read();
 
-    lastCardRank.write(card.getRank());
-    lastCardSuit.write(card.getSuite());
+    lastToLastCard.write( lastCard.read() );
 
-    lastToLastCardRank.write(rank);
-    lastToLastCardSuit.write(suite);
+    mutexTableInformation.wait();
+        lastCard.write(Card::Serialize(card));
+    mutexTableInformation.signal();
 
-    SharedMemory<int> shmem = playersNumberOfCards[playerID];
-    int numCards = shmem.read();
-    numCards -=1;
-    shmem.write(numCards);
+
+    this->setNumberOfCards(playerID,playersNumberOfCards[playerID].read() - 1);
 }
 
 int Table::getNumberOfCards(int playerID) {
@@ -67,14 +63,16 @@ int Table::getNumberOfCards(int playerID) {
 
 void Table::setNumberOfCards(int playerID, int cant) {
     SharedMemory<int> shmem = playersNumberOfCards[playerID];
-    shmem.write(cant);
+    mutexTableInformation.wait();
+        shmem.write(cant);
+    mutexTableInformation.signal();
 }
 
 Table::~Table() {
 }
 
 Card Table::getLastToLastCard() {
-    return Card(lastToLastCardSuit.read(),lastToLastCardRank.read());
+    return Card::toCard( lastToLastCard.read() );
 }
 
 int Table::winner() {
@@ -83,21 +81,32 @@ int Table::winner() {
 
 void Table::winned(int playerID) {
     if (winnerPlayerID.read() < 0){
-        winnerPlayerID.write(playerID);
+        mutexTableInformation.wait();
+            winnerPlayerID.write(playerID);
+        mutexTableInformation.signal();
     }
 }
 
 std::map<std::string,int> Table::stats() {
     std::map<std::string,int> stats;
-    for (int i = 0; i < playersNumberOfCards.size(); ++i) {
-        stats[std::to_string(i)] = this->getNumberOfCards(i);
-    }
-    int winner = winnerPlayerID.read();
+
+    mutexTableInformation.wait();
+        for (int i = 0; i < playersNumberOfCards.size(); ++i) {
+            stats[std::to_string(i)] = this->getNumberOfCards(i);
+        }
+        int winner = winnerPlayerID.read();
+    mutexTableInformation.signal();
+
     if (winner >= 0){
         stats["winner"] = winner;
     }
 
     return stats;
+}
+
+void Table::free() {
+    delete cardsOnTable;
+    mutexTableInformation.Delete();
 }
 
 

@@ -14,6 +14,7 @@ public:
     int lock();
     int readLock();
     int free();
+    int readFree();
 
     ssize_t Write(const void* buffer, const ssize_t buffer_size) const;
     ssize_t Write(const std::string& buffer) const;

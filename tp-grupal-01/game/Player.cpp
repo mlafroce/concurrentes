@@ -23,7 +23,7 @@ void Player::stop() {
 }
 
 void Player::play() {
-	LOG_INFO("Arrancando el jugador " + std::string(1, 48 + this->id));
+	LOG_INFO("Arrancando el jugador " + std::to_string(this->id));
 	while (this->running) {
         turnManager.waitToTurnBegin();
         if (table.winner() >= 0){
@@ -54,10 +54,6 @@ void Player::playCard() {
 void Player::processCard() {
     Card lastCard = table.getLastCard();
     Card lastToLastCard = table.getLastToLastCard();
-
-    //LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " procesara " + lastCard.toString() );
-
-    //sleep(1);
 
 
     //4.Si la carta es un 7, entonces todos los jugadores dicen en voz alta “Atrevido” y colocan su mano
@@ -139,7 +135,7 @@ int Player::getId() const {
 void Player::takeCardsOnTable() {
     std::vector<Card> cards = table.takeAllCards(this->getId());
     this->addCards(cards);
-    LOG_INFO("El jugador " + std::string(1, 48 + this->id) + " tomó todas ("+ std::to_string(cards.size()) +") las cartas de la mesa" );
+    LOG_INFO("El jugador " + std::to_string(this->id) + " tomó todas ("+ std::to_string(cards.size()) +") las cartas de la mesa" );
 }
 
 void Player::checkNumberOfCards() {
@@ -155,4 +151,8 @@ Table Player::getTable() const {
 
 void Player::setId(const int ID) {
     this->id = ID;
+}
+
+void Player::free() {
+    table.free();
 }

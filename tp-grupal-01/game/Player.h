@@ -46,6 +46,8 @@ public:
 	void doHandAction();
 
 	Table getTable() const;
+
+	void free();
 private:
 	/**
 	 * Loop principal
