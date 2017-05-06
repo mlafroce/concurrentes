@@ -47,8 +47,8 @@ void Player::play() {
 void Player::playCard() {
 	Card card = this->cards.back();
 	this->cards.pop_back();
-	LOG_INFO("El jugador " + std::to_string(this->id) + " jugó " + card.toString() );
     table.pushCard(card,this->getId());
+    LOG_INFO("El jugador " + std::to_string(this->id) + " jugó " + card.toString() );
 }
 
 void Player::processCard() {

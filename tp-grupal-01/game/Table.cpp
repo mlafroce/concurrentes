@@ -13,7 +13,7 @@ Table::Table(int numPlayers) : lastCard(tableFilename,'l'),
                                winnerPlayerID(tableFilename,'w'),
                                mutexTableInformation(FILE_IPCS,'s',1){
     for (int i = 0; i < numPlayers ; ++i) {
-        playersNumberOfCards.push_back(SharedMemory<int>(tableFilename,i));
+        playersNumberOfCards.push_back(SharedMemory<int>(tableFilename,(char)i));
     }
     mutexTableInformation.wait();
         lastCard.write(Card::DefaultSerializedCard);
@@ -42,14 +42,11 @@ std::vector<Card> Table::takeAllCards(int playerID) {
 }
 
 void Table::pushCard(Card card,int playerID) {
-    SerializedCard sCard = Card::Serialize(card);
-    cardsOnTable->write(&sCard,sizeof(sCard));
-    numCardsOnTable.write(numCardsOnTable.read() + 1);
-
-
-    lastToLastCard.write( lastCard.read() );
-
     mutexTableInformation.wait();
+        SerializedCard sCard = Card::Serialize(card);
+        cardsOnTable->write(&sCard,sizeof(sCard));
+        numCardsOnTable.write(numCardsOnTable.read() + 1);
+        lastToLastCard.write( lastCard.read() );
         lastCard.write(Card::Serialize(card));
     mutexTableInformation.signal();
 
