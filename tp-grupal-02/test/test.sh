@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ./db-server &
 SERVER_PID=$!
 ./db-client < client1.in &

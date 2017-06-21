@@ -1,48 +1,35 @@
 #include "Server.h"
 #include "../../common-util/Log.h"
-#include "../../common-util/Utils.h"
-#include <cstdio>
-#include <string>
+#include "../../common-util/signals/SignalHandler.h"
+#include "../../common-util/signals/SIGINT_Handler.h"
+#include "../../common-util/IpcException.h"
 
 Server::Server() :
-    mqQuery(Utils::generateKey("db-messages", 'q')),
-    mqResult(Utils::generateKey("db-messages", 'r')),
+    sender(0),
     ipcDestroy(true){}
 
 Server::~Server() {
     if (ipcDestroy) {
-        mqQuery.destroyMessageQueue();
-        mqResult.destroyMessageQueue();
+        sender.destroy();
     }
 }
 
 int Server::listenClients() {
-    int clientPid;
-    Log* log = Log::getInstance();
-    log->info("Escuchando nuevos clientes");
-    this->mqQuery.recvMessage(&clientPid, sizeof(int), 1);
-    char buf[80];
-    snprintf(buf, 80, "El proceso %d intenta comunicarse", clientPid);
-    log->info(buf);
+    LOG_INFO("Escuchando nuevos clientes");
+    int clientPid = sender.takeClient();
+    LOG_INFO("El proceso " + std::to_string(clientPid) + " intenta comunicarse");
     return clientPid;
 }
 
 int Server::attend(int clientId) {
-    bool exit;
-    Log* log = Log::getInstance();
+    sender.setId(clientId);
+    bool exit = false;
     while (!exit) {
-        int msgLen;
-        this->mqQuery.recvMessage(&msgLen, sizeof(int), clientId);
-        std::vector<char>msgBuf(msgLen);
-        this->mqQuery.recvMessage(msgBuf.data(), msgLen, clientId);
-        std::string clientCmd(msgBuf.data());
+        std::string clientCmd = sender.receive();
         
         exit = clientCmd.compare("exit") == 0;
 
-        std::string response = execute(clientCmd);
-        msgLen = response.size() + 1;
-        this->mqResult.sendMessage(&msgLen, sizeof(int), clientId);
-        this->mqResult.sendMessage(response.c_str(), msgLen, clientId);
+        sender.send(execute(clientCmd));
     }
     return 0;
 }
@@ -53,9 +40,31 @@ void Server::preventIpcDestroy() {
 
 
 std::string Server::execute(const std::string& clientCmd) {
-    Log* log = Log::getInstance();
-    std::string logMsg("El cliente intenta ejecutar ");
-    logMsg.append(clientCmd);
-    log->debug(logMsg);
+    LOG_DEBUG("El cliente intenta ejecutar \"" + clientCmd + "\"");
     return std::string("Se ejecuta ") + clientCmd;
+}
+
+void Server::run() {
+    SIGINT_Handler sigIntHandler(*this);
+    SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
+    try {
+        while (this->isRunning()) {
+            int pidCliente = this->listenClients();
+            pid_t pid = fork();
+            if (pid == 0) {
+                this->preventIpcDestroy();
+                LOG_INFO("Aceptando mensajes del cliente " + std::to_string(pidCliente));
+                this->attend(pidCliente);
+                exit(0);
+            }
+        }
+    } catch (const std::string& e) {
+        LOG_ERROR(e.c_str());
+    } catch (const IpcException& e) {
+        LOG_ERROR(e.what());
+    }
+
+    // TODO Agregar un signal handler para sigcld que haga waitpid(-1, 0, 0);
+
+    SignalHandler::deleteInstance();
 }

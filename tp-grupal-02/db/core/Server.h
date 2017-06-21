@@ -4,6 +4,7 @@
 #include "../../common-util/signals/Process.h"
 #include "../../common-util/MessageQueue.h"
 #include "../../common-util/LockFile.h"
+#include "../../common-util/message/MessageSender.h"
 
 
 class Server : public Process {
@@ -15,11 +16,11 @@ public:
      */
     int listenClients();
     int attend(int clientId);
+    void run();
     void preventIpcDestroy();
 private:
     std::string execute(const std::string& clientCmd);
-    MessageQueueBase mqQuery;
-    MessageQueueBase mqResult;
+    MessageSender sender;
     bool ipcDestroy;
 };
 

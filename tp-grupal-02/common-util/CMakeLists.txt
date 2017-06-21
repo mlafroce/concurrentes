@@ -8,10 +8,9 @@ add_library(common
     Log.cpp
     LockFile.cpp
     MessageQueue.cpp
-    Semaphore.cpp
     Utils.cpp
     message/Message.cpp
     signals/SIGINT_Handler.cpp
     signals/SignalHandler.cpp
     signals/Process.cpp
-)
+    message/MessageSender.cpp message/MessageSender.h)

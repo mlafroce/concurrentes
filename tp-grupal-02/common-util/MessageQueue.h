@@ -1,6 +1,7 @@
 #ifndef MESSAGEQUEUE_H
 #define MESSAGEQUEUE_H
 #include <sys/ipc.h>
+#include <string>
 
 class MessageQueueBase {
 public:
@@ -8,6 +9,7 @@ public:
      * Joins an existing message queue,  or creates a new one if create == true
      */
     MessageQueueBase(key_t key);
+    MessageQueueBase(const std::string& file, const char letter);
     /**
      * Frees IPC
      */

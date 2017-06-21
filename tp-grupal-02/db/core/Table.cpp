@@ -107,5 +107,8 @@ std::string Table::execute(const std::string &query) {
     if (std::regex_match(query,r_insert)) {
         return insert(query);
     }
+    if (query == "exit") {
+        return "Goodbye";
+    }
     return "Syntax error in query";
 }

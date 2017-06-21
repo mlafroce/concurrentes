@@ -5,6 +5,19 @@
 
 #include "core/Server.h"
 
+void initLog() {
+    Log* log = Log::getInstance();
+    log->setFile("server.log");
+    log->showTimePrecision(true);
+    log->showInSTDOUT(true);
+    log->setLevel(DEBUG);
+    LOG_INFO("Iniciando servidor");
+}
+
+void freeMemory() {
+    Log::deleteInstance();
+}
+
 int main() {
     /*
      * TODO:
@@ -20,33 +33,12 @@ int main() {
      *                 Al cliente no le importa, solo hay 1 server
      *          > Lo serializa y lo pone en la "cola de salida"
      */
-    Log* log = Log::getInstance();
-    log->setFile("server.log");
-    log->info("Iniciando servidor");
+    initLog();
+
     Server server;
-    SIGINT_Handler sigIntHandler(server);
-    SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
-    try {
-        while (server.isRunning()) {
-            int pidCliente = server.listenClients();
-            pid_t pid = fork();
-            if (pid == 0) {
-                server.preventIpcDestroy();
-                log->info(std::string("Aceptando mensajes del cliente ")
-                + std::to_string(pidCliente));
-                return server.attend(pidCliente);
-            } 
-        }
-    } catch (const std::string& e) {
-        log->error(e.c_str());
-    } catch (const IpcException& e) {
-        log->error(e.what());
-    }
-    
-    // TODO Agregar un signal handler para sigcld que haga waitpid(-1, 0, 0);
-    
-    SignalHandler::deleteInstance();
-    Log::deleteInstance();
+    server.run();
+
+    freeMemory();
 }
 
 

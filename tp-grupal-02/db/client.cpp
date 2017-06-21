@@ -1,11 +1,19 @@
-#include "../common-util/Log.h"
-#include "../common-util/IpcException.h"
-#include "../common-util/signals/SignalHandler.h"
-#include "../common-util/signals/SIGINT_Handler.h"
-
 #include "core/Client.h"
 
-#include <iostream>
+#include "../common-util/Log.h"
+
+void initLog() {
+    Log* log = Log::getInstance();
+    log->setFile("client.log");
+    log->setLevel(DEBUG);
+    log->showTimePrecision(true);
+    log->showInSTDOUT(true);
+    LOG_INFO("Iniciando cliente");
+}
+
+void freeMemory() {
+    Log::deleteInstance();
+}
 
 int main () {
     /*
@@ -17,28 +25,12 @@ int main () {
      *          > Pone el mensaje SERIALIZDO en la cola de entrada
      *          > ESPERA (sleep? bloqueo?) a leer un mensaje que tenga su id en la cola de salida.
      */
-    Log* log = Log::getInstance();
-    log->setFile("client.log");
-    log->info("Iniciando cliente");
-    
+
+    initLog();
+
     Client client;
-    SIGINT_Handler sigIntHandler(client);
-    SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
+    client.start();
     
-    try {
-        client.connect();
-        while (client.isRunning()) {
-            std::string query;
-            std::cin >> query;
-            client.query(query);
-        }
-    } catch (const std::string& e) {
-        log->error(e.c_str());
-    } catch (const IpcException& e) {
-        log->error(e.what());
-    }
-    
-    SignalHandler::deleteInstance();
-    Log::deleteInstance();
+    freeMemory();
 }
 

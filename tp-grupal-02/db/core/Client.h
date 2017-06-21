@@ -3,16 +3,18 @@
 #include <string>
 #include "../../common-util/signals/Process.h"
 #include "../../common-util/MessageQueue.h"
+#include "../../common-util/message/MessageSender.h"
 
 class Client : public Process {
 public:
     Client();
     void query(const std::string& query);
-    void connect();
+    void start();
+
 private:
-    MessageQueueBase mqQuery;
-    MessageQueueBase mqResult;
+    MessageSender sender;
     const int id;
+    void connect();
     void displayResult(const std::string& result);
 };
 

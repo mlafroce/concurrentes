@@ -10,7 +10,6 @@ add_executable(db-server
 )
 
 add_executable(db-client
-    core/Table.cpp
     core/Client.cpp
     client.cpp # main()
 )

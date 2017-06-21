@@ -1,10 +1,19 @@
 #include "MessageQueue.h"
 #include "IpcException.h"
+#include "Utils.h"
 #include <cerrno>
 #include <cstring>
 #include <sys/msg.h>
 
 MessageQueueBase::MessageQueueBase(key_t key) {
+    this->msgId = msgget(key, IPC_CREAT | 0660 );
+    if (this->msgId == -1 ) {
+        throw IpcException(errno);
+    }
+}
+
+MessageQueueBase::MessageQueueBase(const std::string& file, const char letter) {
+    key_t key = Utils::generateKey(file,letter);
     this->msgId = msgget(key, IPC_CREAT | 0660 );
     if (this->msgId == -1 ) {
         throw IpcException(errno);
