@@ -36,7 +36,7 @@ int main() {
     initLog();
 
     Server server;
-    server.run();
+    server.start();
 
     freeMemory();
 }

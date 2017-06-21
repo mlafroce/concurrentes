@@ -1,7 +1,3 @@
-//
-// Created by tomi on 14/06/17.
-//
-
 #ifndef CONCURRENTES_MESSAGE_H
 #define CONCURRENTES_MESSAGE_H
 

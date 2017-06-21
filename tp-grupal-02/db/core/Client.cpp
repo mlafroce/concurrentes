@@ -23,6 +23,7 @@ void Client::query(const std::string& query) {
     std::string result(msgBuf.data());
     */
     sender.send(query);
+    LOG_DEBUG("Query enviado \"" + query + "\"");
     displayResult(sender.receive());
 }
 
@@ -36,25 +37,15 @@ void Client::displayResult(const std::string& result) {
     LOG_DEBUG(result);
 }
 
-void Client::start() {
-    SIGINT_Handler sigIntHandler(*this);
-    SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
+void Client::work() {
+    this->connect();
 
-    try {
-        this->connect();
-
-        while (this->isRunning()) {
-            std::string query;
-            std::getline(std::cin, query);
-            this->query(query);
-        }
-
-        SignalHandler::deleteInstance();
-    } catch (const std::string& e) {
-        LOG_ERROR(e.c_str());
-    } catch (const IpcException& e) {
-        LOG_ERROR(e.what());
+    while (this->isRunning()) {
+        std::string query;
+        std::cout << "> ";
+        std::getline(std::cin, query);
+        LOG_INFO("Enviando: " + query);
+        this->query(query);
     }
-
 }
 

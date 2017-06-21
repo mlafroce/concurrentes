@@ -1,7 +1,3 @@
-//
-// Created by tomi on 21/06/17.
-//
-
 #include <vector>
 #include "MessageSender.h"
 

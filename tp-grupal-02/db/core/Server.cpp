@@ -26,10 +26,9 @@ int Server::attend(int clientId) {
     bool exit = false;
     while (!exit) {
         std::string clientCmd = sender.receive();
-        
-        exit = clientCmd.compare("exit") == 0;
-
+        LOG_DEBUG("LLega mensaje de " + std::to_string(clientId) + "\n\t\"" + clientCmd + "\"");
         sender.send(execute(clientCmd));
+        exit = clientCmd.compare("exit") == 0;
     }
     return 0;
 }
@@ -44,27 +43,16 @@ std::string Server::execute(const std::string& clientCmd) {
     return std::string("Se ejecuta ") + clientCmd;
 }
 
-void Server::run() {
-    SIGINT_Handler sigIntHandler(*this);
-    SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
-    try {
-        while (this->isRunning()) {
-            int pidCliente = this->listenClients();
-            pid_t pid = fork();
-            if (pid == 0) {
-                this->preventIpcDestroy();
-                LOG_INFO("Aceptando mensajes del cliente " + std::to_string(pidCliente));
-                this->attend(pidCliente);
-                exit(0);
-            }
+void Server::work() {
+    while (this->isRunning()) {
+        int pidCliente = this->listenClients();
+        pid_t pid = fork();
+        if (pid == 0) {
+            this->preventIpcDestroy();
+            LOG_INFO("Aceptando mensajes del cliente " + std::to_string(pidCliente));
+            this->attend(pidCliente);
+            exit(0);
         }
-    } catch (const std::string& e) {
-        LOG_ERROR(e.c_str());
-    } catch (const IpcException& e) {
-        LOG_ERROR(e.what());
     }
-
-    // TODO Agregar un signal handler para sigcld que haga waitpid(-1, 0, 0);
-
-    SignalHandler::deleteInstance();
 }
+

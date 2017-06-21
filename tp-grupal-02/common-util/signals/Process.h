@@ -4,10 +4,12 @@
 class Process {
 public:
     Process();
+    void start();
     void stop();
     bool isRunning();
 private:
     bool running;
+    virtual void work() = 0;
 };
 
 #endif // PROCESS_H

@@ -23,8 +23,8 @@ MessageQueueBase::MessageQueueBase(const std::string& file, const char letter) {
 void MessageQueueBase::sendMessage(const void* buf, int bufSize, int msgType) {
     struct msgbuf* msg = (struct msgbuf*)malloc(sizeof(struct msgbuf) + bufSize);
     msg->mtype = msgType;
-    memcpy(msg->mtext, buf, bufSize);
-    int status = msgsnd(this->msgId, msg, bufSize, 0);
+    memcpy(msg->mtext, buf, (size_t)bufSize);
+    int status = msgsnd(this->msgId, msg, (size_t)bufSize, 0);
     free(msg);
     if (status  == -1) {
         throw IpcException(errno);
@@ -33,8 +33,8 @@ void MessageQueueBase::sendMessage(const void* buf, int bufSize, int msgType) {
 
 void MessageQueueBase::recvMessage(void* buf, int bufSize, int msgType) {
     struct msgbuf* msg = (struct msgbuf*)malloc(sizeof(struct msgbuf) + bufSize);
-    int status = msgrcv(this->msgId, msg, bufSize, msgType, 0);
-    memcpy(buf, msg->mtext, bufSize);
+    int status = (int)msgrcv(this->msgId, msg, bufSize, msgType, 0);
+    memcpy(buf, msg->mtext, (size_t) bufSize);
     free(msg);
     if (status  == -1) {
         throw IpcException(errno);

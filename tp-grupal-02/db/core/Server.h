@@ -11,17 +11,19 @@ class Server : public Process {
 public:
     Server();
     ~Server();
+private:
+    MessageSender sender;
+    bool ipcDestroy;
+
+    std::string execute(const std::string& clientCmd);
+    void work();
+
     /**
      * Devuelve pid del cliente entrante
      */
     int listenClients();
     int attend(int clientId);
-    void run();
     void preventIpcDestroy();
-private:
-    std::string execute(const std::string& clientCmd);
-    MessageSender sender;
-    bool ipcDestroy;
 };
 
 #endif // SERVER_H

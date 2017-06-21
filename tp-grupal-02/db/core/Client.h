@@ -8,14 +8,14 @@
 class Client : public Process {
 public:
     Client();
-    void query(const std::string& query);
-    void start();
 
 private:
     MessageSender sender;
     const int id;
     void connect();
+    void query(const std::string& query);
     void displayResult(const std::string& result);
+    void work();
 };
 
 #endif // CLIENT_H
