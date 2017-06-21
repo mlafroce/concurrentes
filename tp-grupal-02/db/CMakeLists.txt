@@ -3,17 +3,19 @@ project(concurrentes)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-add_library(db-lib
-        core/Table.cpp core/Table.h
-        ../common-util/LockFile.cpp ../common-util/LockFile.h
-        ../common-util/Log.cpp ../common-util/Log.h
-        ../common-util/Semaphore.cpp ../common-util/Semaphore.h
-        ../common-util/Utils.cpp ../common-util/Utils.h
-        ../common-util/MessageQueue.h
-        ../common-util/message/Message.cpp ../common-util/message/Message.h)
+add_executable(db-server
+    core/Table.cpp
+    core/Server.cpp
+    server.cpp # main()
+)
 
-add_executable(db main.cpp utils/TextTable.h)
+add_executable(db-client
+    core/Table.cpp
+    core/Client.cpp
+    client.cpp # main()
+)
 
-target_link_libraries(db db-lib)
+target_link_libraries(db-server common)
+target_link_libraries(db-client common)
 
 

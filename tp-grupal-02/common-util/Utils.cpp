@@ -41,7 +41,7 @@ std::string Utils::getTimeWithFormatAndPrecision(std::string format) {
 }
 
 std::string Utils::generateFileMessage(std::string file, int line) {
-    file.erase(0,file.find("tp-grupal-01/") + std::string("tp-grupal-01/").size());
+    file.erase(0,file.find("tp-grupal-02/") + std::string("tp-grupal-02/").size());
     return file + " (line " + std::to_string(line) + ")";
 }
 
