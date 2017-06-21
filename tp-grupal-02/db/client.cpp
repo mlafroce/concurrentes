@@ -7,7 +7,7 @@ void initLog() {
     log->setFile("client.log");
     log->setLevel(DEBUG);
     log->showTimePrecision(true);
-    log->showInSTDOUT(true);
+    log->showInSTDOUT(false);
     LOG_INFO("Iniciando cliente");
 }
 

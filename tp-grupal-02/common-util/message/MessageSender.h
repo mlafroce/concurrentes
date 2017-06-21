@@ -10,8 +10,9 @@ private:
     MessageQueueBase mqQuery;
     MessageQueueBase mqResult;
     int id;
+    bool isServer;
 public:
-    MessageSender(int id);
+    MessageSender(int id,bool isServer = false);
     ~MessageSender(){};
 
     void setId(int nId){id = nId;};
@@ -20,6 +21,8 @@ public:
     int takeClient();
     void send(const std::string &message);
     std::string receive();
+
+    bool isConnected();
 
     void destroy();
 };

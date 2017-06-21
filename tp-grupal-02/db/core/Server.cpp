@@ -1,11 +1,8 @@
 #include "Server.h"
 #include "../../common-util/Log.h"
-#include "../../common-util/signals/SignalHandler.h"
-#include "../../common-util/signals/SIGINT_Handler.h"
-#include "../../common-util/IpcException.h"
 
 Server::Server() :
-    sender(0),
+    sender(0, true),
     ipcDestroy(true){}
 
 Server::~Server() {
@@ -17,7 +14,7 @@ Server::~Server() {
 int Server::listenClients() {
     LOG_INFO("Escuchando nuevos clientes");
     int clientPid = sender.takeClient();
-    LOG_INFO("El proceso " + std::to_string(clientPid) + " intenta comunicarse");
+    LOG_INFO("El proceso " + std::to_string(clientPid) + " solicita conexión");
     return clientPid;
 }
 
@@ -25,9 +22,11 @@ int Server::attend(int clientId) {
     sender.setId(clientId);
     bool exit = false;
     while (!exit) {
+        LOG_DEBUG("Esperando mensaje de cliente " + std::to_string(clientId));
         std::string clientCmd = sender.receive();
-        LOG_DEBUG("LLega mensaje de " + std::to_string(clientId) + "\n\t\"" + clientCmd + "\"");
+        LOG_DEBUG("LLega mensaje de " + std::to_string(clientId) + ". Genero y envio respuesta\n\t\"" + clientCmd + "\"");
         sender.send(execute(clientCmd));
+        LOG_DEBUG("Respuesta enviada");
         exit = clientCmd.compare("exit") == 0;
     }
     return 0;
@@ -40,7 +39,7 @@ void Server::preventIpcDestroy() {
 
 std::string Server::execute(const std::string& clientCmd) {
     LOG_DEBUG("El cliente intenta ejecutar \"" + clientCmd + "\"");
-    return std::string("Se ejecuta ") + clientCmd;
+    return table.execute(clientCmd);
 }
 
 void Server::work() {
@@ -49,8 +48,9 @@ void Server::work() {
         pid_t pid = fork();
         if (pid == 0) {
             this->preventIpcDestroy();
-            LOG_INFO("Aceptando mensajes del cliente " + std::to_string(pidCliente));
+            LOG_INFO("Conectado con cliente " + std::to_string(pidCliente));
             this->attend(pidCliente);
+            LOG_INFO("Finalizada conexión con cliente " + std::to_string(pidCliente));
             exit(0);
         }
     }

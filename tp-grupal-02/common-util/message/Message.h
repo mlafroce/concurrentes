@@ -8,12 +8,12 @@ private:
     int message_id;
     std::string message;
 
-    void parseSerialized(char* serialized, int* id, std::string *message);
+    void parseSerialized(char* serialized, std::string *message);
 
 public:
     Message(const char* serialize);
     Message();
-    Message(int id, std::string message);
+    Message(std::string message);
 
     const char* serialize();
     int size();

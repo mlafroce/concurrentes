@@ -43,6 +43,9 @@ t_row Table::getHeader() {
 }
 
 std::string Table::generatePrettyResult(t_table res) {
+    if (res.size() == 0) {
+        return "Empty set (0.00 sec)";
+    }
     TextTable t;
     for (auto colName : this->getHeader()) {
         t.add(colName);

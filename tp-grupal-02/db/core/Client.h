@@ -16,6 +16,7 @@ private:
     void query(const std::string& query);
     void displayResult(const std::string& result);
     void work();
+
 };
 
 #endif // CLIENT_H

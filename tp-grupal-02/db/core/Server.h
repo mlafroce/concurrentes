@@ -5,6 +5,7 @@
 #include "../../common-util/MessageQueue.h"
 #include "../../common-util/LockFile.h"
 #include "../../common-util/message/MessageSender.h"
+#include "Table.h"
 
 
 class Server : public Process {
@@ -14,6 +15,7 @@ public:
 private:
     MessageSender sender;
     bool ipcDestroy;
+    Table table;
 
     std::string execute(const std::string& clientCmd);
     void work();
