@@ -1,5 +1,5 @@
-select * from tabla;
-insert values ("Ricardo", "Fort", "1513465307");
-select * from tabla;
-insert values ("Lizy", "Tagliani", "1589892352");
+select * from tabla
+insert values ("Ricardo","Fort","1513465307")
+select * from tabla
+insert values ("Lizy","Tagliani","1589892352")
 exit

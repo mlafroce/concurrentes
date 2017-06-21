@@ -9,7 +9,7 @@ void initLog() {
     Log* log = Log::getInstance();
     log->setFile("server.log");
     log->showTimePrecision(true);
-    log->showInSTDOUT(true);
+    log->showInSTDOUT(false);
     log->setLevel(DEBUG);
     LOG_INFO("Iniciando servidor");
 }
