@@ -31,10 +31,10 @@ int main() {
             int pidCliente = server.listenClients();
             pid_t pid = fork();
             if (pid == 0) {
+                server.preventIpcDestroy();
                 log->info(std::string("Aceptando mensajes del cliente ")
                 + std::to_string(pidCliente));
-                server.attend(pidCliente);
-                return;
+                return server.attend(pidCliente);
             } 
         }
     } catch (const std::string& e) {
@@ -42,6 +42,8 @@ int main() {
     } catch (const IpcException& e) {
         log->error(e.what());
     }
+    
+    // TODO Agregar un signal handler para sigcld que haga waitpid(-1, 0, 0);
     
     SignalHandler::deleteInstance();
     Log::deleteInstance();

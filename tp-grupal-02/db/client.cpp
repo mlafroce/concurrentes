@@ -1,8 +1,11 @@
 #include "../common-util/Log.h"
+#include "../common-util/IpcException.h"
 #include "../common-util/signals/SignalHandler.h"
 #include "../common-util/signals/SIGINT_Handler.h"
 
-#include "../db/core/Client.h"
+#include "core/Client.h"
+
+#include <iostream>
 
 int main () {
     /*
@@ -22,17 +25,18 @@ int main () {
     SIGINT_Handler sigIntHandler(client);
     SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
     
-//     try {
-//         while (client.isRunning()) {
-//             client.query();
-//         }
-//     } catch (const std::string& e) {
-//         log->error(e.c_str());
-//     } catch (const IpcException& e) {
-//         log->error(e.what());
-//     }
-    
-    client.test();
+    try {
+        client.connect();
+        while (client.isRunning()) {
+            std::string query;
+            std::cin >> query;
+            client.query(query);
+        }
+    } catch (const std::string& e) {
+        log->error(e.c_str());
+    } catch (const IpcException& e) {
+        log->error(e.what());
+    }
     
     SignalHandler::deleteInstance();
     Log::deleteInstance();

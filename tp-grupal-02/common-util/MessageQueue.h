@@ -20,7 +20,10 @@ public:
      * Receives message
      */
     void recvMessage(void* buf, int bufSize, int msgType);
-
+    /**
+     * Turns off ipc free
+     */
+    void preventDestroy();
 private:
     int msgId;
 };
