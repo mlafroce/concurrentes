@@ -1,0 +1,4 @@
+select * from tabla;
+insert values ("Guido", "Suller", "1523460302");
+select * from tabla;
+exit
