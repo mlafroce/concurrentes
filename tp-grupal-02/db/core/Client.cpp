@@ -20,18 +20,6 @@ void Client::query(const std::string& query) {
 }
 
 void Client::connect() {
-    SharedMemory<int> connected("client." + std::to_string(this->id) + ".ipc",'t');
-    connected.write(CLIENT_NOT_CONNECTED);
-    if (fork() == 0) {
-        sleep(CLIENT_TIMEOUT);
-        if (connected.read() == CLIENT_NOT_CONNECTED) {
-            std::cout << "ERROR: No se puede conectar con el servidor [TIMEOUT]" << std::endl;
-            LOG_ERROR("No se puede conectar al servidor TIMEOUT");
-            kill(getppid(),SIGINT);
-            sender.destroy();
-        }
-        exit(0);
-    }
     sender.connect();
     LOG_INFO("El cliente " + std::to_string(this->id) + " intenta conectarse");
     if ( sender.isConnected() ) {
