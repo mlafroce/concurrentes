@@ -10,6 +10,7 @@ add_library(common
         MessageQueue.cpp
         Utils.cpp
         SharedMemory.cpp
+        signals/SIGCHLD_Handler.cpp
         signals/SIGINT_Handler.cpp
         signals/SignalHandler.cpp
         signals/Process.cpp
