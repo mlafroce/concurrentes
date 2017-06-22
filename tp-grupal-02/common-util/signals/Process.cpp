@@ -17,9 +17,9 @@ void Process::stop() {
 
 void Process::start() {
     SIGINT_Handler sigIntHandler(*this);
-	SIGCHLD_Handler sigChldHandler(*this);
+	//SIGCHLD_Handler sigChldHandler(*this);
+    //SignalHandler::getInstance()->registerHandler(SIGCHLD, &sigChldHandler);
     SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
-    SignalHandler::getInstance()->registerHandler(SIGCHLD, &sigChldHandler);
     try {
         this->work();
     } catch (const std::string& e) {

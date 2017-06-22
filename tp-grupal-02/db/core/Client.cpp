@@ -23,7 +23,6 @@ void Client::connect() {
     sender.connect();
     LOG_INFO("El cliente " + std::to_string(this->id) + " intenta conectarse");
     if ( sender.isConnected() ) {
-        connected.write(CLIENT_CONNECTED);
         LOG_INFO("Cliente " + std::to_string(this->id) + " conectado");
     } else {
         LOG_WARNING("Error en la conexion con el servidor")

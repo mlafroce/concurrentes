@@ -1,5 +1,8 @@
 #include "Server.h"
 #include "../../common-util/Log.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 Server::Server() :
     sender(0, true),
@@ -15,6 +18,10 @@ int Server::listenClients() {
     LOG_INFO("Escuchando nuevos clientes");
     int clientPid = sender.takeClient();
     LOG_INFO("El proceso " + std::to_string(clientPid) + " solicita conexión");
+	pid_t pid;
+	while (pid = waitpid(-1, 0, WNOHANG) > 1) {
+		LOG_INFO("Escuchador " + std::to_string(pid) + " destruido");
+	}
     return clientPid;
 }
 
