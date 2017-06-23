@@ -51,7 +51,7 @@ Administra el dialogo entre los clientes y el servidor. Utiliza dos colas de men
 * **mqResponse** Cola de mensajes por la que el servidor le responde las consultas al cliente.
 
 Posee un método **connect()** con el que inicia una "conexión" con el cliente. A su vez hay un metodo (**isConnected()**) para verificar, desde el lado del cliente, si la conexion es establecida retorna ***true***.
-Para realizar dicho trabajo. El cliente deja su id en la cola ***mqQuery*** con tipo definido para la conexion (***CONNECT_TYPE (1)***). El servidor lee el id y posteriormente deja en ***meResult*** un numero preseteado con el id del cliente. El cliente cuando hace ***isConnected()*** verifica que el numero que lee de la consulta es efectivamente el qie espera.
+Para realizar dicho trabajo. El cliente deja su id en la cola ***mqQuery*** con tipo definido para la conexion ( ***CONNECT_TYPE (1)*** ). El servidor lee el id y posteriormente deja en ***mqResult*** un numero preseteado con el id del cliente. El cliente cuando hace ***isConnected()*** verifica que el numero que lee de la consulta es efectivamente el qie espera.
 
 También posee un método **takeClient()** con el que se queda bloqueado hasta que un cliente se conecta, y devuelve el id del cliente conectado. 
 
