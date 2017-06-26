@@ -71,9 +71,9 @@ La clase **Cliente** posee un MessageSender al igual que el servidor, que utiliz
 
 ### Diagrama de clases Cliente
 
-![Clases cliente(s)](https://drive.google.com/uc?id=0B0t-E7izp738bEtZT0Z5Z2xZTUU)
+![Clases cliente(s)](https://drive.google.com/uc?id=0B0t-E7izp738TVFLdGcyRFBPVDg)
 
 ### Diagrama de clases Gestor de la Base de Datos
 
-![Clases servidor](https://drive.google.com/uc?id=0B0t-E7izp738TjdfeHRMRjg3RGc)
+![Clases servidor](https://drive.google.com/uc?id=0B0t-E7izp738X0t0OFdmVkhLTkk)
 
