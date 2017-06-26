@@ -1,3 +1,5 @@
+<img src="https://drive.google.com/uc?id=0B0t-E7izp738eWZWQjJtU09TSVY4am9jNE5Fb2twb0pxWHZB" width="300">
+
 # 75.59 - Tecnicas de programacion concurrente I - FIUBA
 
 ## 2do Proyecto | Base de datos
@@ -67,7 +69,11 @@ La clase **Cliente** posee un MessageSender al igual que el servidor, que utiliz
 
 ### Clases
 
-### Interacción entre clases principales
+### Diagrama de clases Cliente
 
-### Diagrama de estados de la base de datos
+![Clases cliente(s)](https://drive.google.com/uc?id=0B0t-E7izp738bEtZT0Z5Z2xZTUU)
+
+### Diagrama de clases Gestor de la Base de Datos
+
+![Clases servidor](https://drive.google.com/uc?id=0B0t-E7izp738TjdfeHRMRjg3RGc)
 
