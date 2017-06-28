@@ -21,6 +21,8 @@ private:
 
     std::string update(const std::string query);
 
+    std::string help();
+
     std::string generatePrettyResult(t_table res);
 
     t_row getHeader();

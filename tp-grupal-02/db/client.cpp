@@ -1,3 +1,4 @@
+#include <iostream>
 #include "core/Client.h"
 
 #include "../common-util/Log.h"
@@ -16,21 +17,13 @@ void freeMemory() {
 }
 
 int main () {
-    /*
-     * TODO:
-     *      - Ciclo que hace stdin (input humano)
-     *      - Cada vez que presiona enter:
-     *          > Genera message poniendo su id como emisor y lo que se lee del stdin en el body
-     *              Message(getpid(),0,stdin)
-     *          > Pone el mensaje SERIALIZDO en la cola de entrada
-     *          > ESPERA (sleep? bloqueo?) a leer un mensaje que tenga su id en la cola de salida.
-     */
-
     initLog();
 
     Client client;
+    std::cout << ">>>> TPC I - Cliente <<<<" << std::endl << std::endl;
     client.start();
     
     freeMemory();
+    std::cout << ">>>> TPC I - Adiosss! <<<<" << std::endl << std::endl;
 }
 

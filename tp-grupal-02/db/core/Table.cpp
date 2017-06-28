@@ -110,8 +110,24 @@ std::string Table::execute(const std::string &query) {
     if (std::regex_match(query,r_insert)) {
         return insert(query);
     }
+
+    if (query == "help") {
+        return help();
+    }
+
     if (query == "exit") {
         return "Goodbye";
     }
     return "Syntax error in query";
+}
+
+std::string Table::help() {
+    std::string help = "";
+    help += ">>>> TPC I - Help <<<<\n\n\n";
+    help += "* Insert \n -> insert values(\"<<nombre>>\",\"<<apellido>>\",\"<<telefono>>\") \n\n";
+    help += "* Select \n -> select * \n -> select nombre = \"<<nombre>>\"\n\n";
+    help += "* Exit \n -> exit \n\n";
+    help += "\n\n";
+
+    return help;
 }
