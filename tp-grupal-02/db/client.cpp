@@ -20,10 +20,7 @@ int main () {
     initLog();
 
     Client client;
-    std::cout << ">>>> TPC I - Cliente <<<<" << std::endl << std::endl;
     client.start();
-    
     freeMemory();
-    std::cout << ">>>> TPC I - Adiosss! <<<<" << std::endl << std::endl;
 }
 

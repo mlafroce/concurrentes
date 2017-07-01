@@ -1,6 +1,7 @@
 #include "Table.h"
 #include "../../common-util/Utils.h"
 #include "../utils/TextTable.h"
+#include "../../common-util/Log.h"
 #include <regex>
 #include <fstream>
 
@@ -31,11 +32,6 @@ std::string Table::insert(const std::string query) {
     return "Query Error, 0 row affected.\n"
             " Expected:\t`insert values(\"<<nombre>>\",\"<<apellido>>\",\"<<telefono>>\")`\n"
             " Get:\t\t`" + query + "` (" + std::to_string(sm.size()) + " match)";
-}
-
-std::string Table::update(const std::string query) {
-    //TODO: Alguna forma de reemplazar en el archivo.
-    return "[NOT IMPLEMENTED]";
 }
 
 t_row Table::getHeader() {
@@ -97,6 +93,54 @@ std::string Table::select(const std::string query) {
     return generatePrettyResult(res);
 }
 
+std::string Table::update(const std::string query) {
+    t_table filter;
+    this->iterate(&collectAll,&filter,NULL);
+    bool isFilterName = false;
+    std::regex r_filter("where nombre ?= ?\"([^\"]*)\"");
+    std::string filterName = "";
+    std::smatch sm;
+    if (std::regex_search(query,sm,r_filter)) {
+        filterName = sm[1];
+        isFilterName = true;
+    }
+    LOG_DEBUG("Recolecto todas las filas (" + std::to_string(filter.size()) + ")");
+    int indexCol = -1;
+    std::string newColValue;
+    std::regex r_cols_up("set (nombre|direccion|telefono) = \"([^\"]*)\"");
+    std::smatch sm_cols_up;
+    if (std::regex_search(query,sm_cols_up,r_cols_up)) {
+        if (sm_cols_up.size() == 3) {
+            std::string col = sm_cols_up[1];
+            indexCol = (col == "nombre") ? 0 : ((col == "direccion") ? 1 : 2);
+            newColValue = sm_cols_up[2];
+        } else {
+            LOG_DEBUG("Regex searh result: " + std::to_string(sm_cols_up.size()) );
+            return "Syntax error in update query";
+        }
+    } else {
+        return "Syntax error in update query";
+    }
+    LOG_DEBUG("Modifico columna " + std::to_string(indexCol) + " con nuevo valor \"" + newColValue + "\"");
+    int counter = 0;
+    t_table finalTable;
+    for (t_row &row : filter) {
+        if (!isFilterName || row[0] == filterName) {
+            row[indexCol] = newColValue;
+            counter++;
+        }
+        finalTable.push_back(row);
+    }
+    LOG_DEBUG("Se van a modificar " + std::to_string(finalTable.size()) + " filas");
+    if (counter > 0) {
+        lockFile.lock();
+            lockFile.cleanFile();
+            lockFile.WriteFromStart(tableToString(finalTable));
+        lockFile.free();
+    }
+    return "Query OK, " + std::to_string(counter) + " row affected (0.01 sec)";
+}
+
 std::string Table::execute(const std::string &query) {
     std::regex r_select("^select.*");
     if (std::regex_match(query,r_select)) {
@@ -110,13 +154,12 @@ std::string Table::execute(const std::string &query) {
     if (std::regex_match(query,r_insert)) {
         return insert(query);
     }
-
-    if (query == "help") {
-        return help();
-    }
-
     if (query == "exit") {
         return "Goodbye";
+    }
+
+    if (query == "help") {
+        return this->help();
     }
     return "Syntax error in query";
 }
@@ -126,8 +169,17 @@ std::string Table::help() {
     help += ">>>> TPC I - Help <<<<\n\n\n";
     help += "* Insert \n -> insert values(\"<<nombre>>\",\"<<apellido>>\",\"<<telefono>>\") \n\n";
     help += "* Select \n -> select * \n -> select nombre = \"<<nombre>>\"\n\n";
+    help += "* Update \n -> update set nombre|direccion|telefono = <<nuevo valor>> [where nombre = \"<<nombre>>\"]\n\n";
     help += "* Exit \n -> exit \n\n";
-    help += "\n\n";
+    help += "\n";
 
     return help;
+}
+
+std::string Table::tableToString(t_table aTable) {
+    std::string final = "";
+    for (t_row& row : aTable) {
+        final += row[0] + "," + row[1] + "," + row [2] + "\n";
+    }
+    return final;
 }

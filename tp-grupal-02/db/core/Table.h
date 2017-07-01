@@ -27,6 +27,7 @@ private:
 
     t_row getHeader();
 
+    std::string tableToString(t_table aTable);
 public:
     Table();
     ~Table(){};

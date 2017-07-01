@@ -17,8 +17,6 @@ void Process::stop() {
 
 void Process::start() {
     SIGINT_Handler sigIntHandler(*this);
-	//SIGCHLD_Handler sigChldHandler(*this);
-    //SignalHandler::getInstance()->registerHandler(SIGCHLD, &sigChldHandler);
     SignalHandler::getInstance()->registerHandler(SIGINT, &sigIntHandler);
     try {
         this->work();

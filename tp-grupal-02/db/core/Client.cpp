@@ -37,7 +37,7 @@ void Client::displayResult(const std::string& result) {
 
 void Client::work() {
     this->connect();
-
+    std::cout << "Bienvenidos cliente " << this->id <<". Conexión establecida" << std::endl;
     while (this->isRunning()) {
         std::string query;
         std::cout << "> ";

@@ -27,7 +27,7 @@ int LockFile::free() {
 
 int LockFile::readFree() {
     this->flock1.l_type = F_UNLCK;
-    return fcntl(0,F_SETLK,&(this->flock1));
+    return fcntl(this->fd,F_SETLK,&(this->flock1));
 }
 
 ssize_t LockFile::Write(const void* buffer,const ssize_t buffer_size) const {
@@ -35,8 +35,17 @@ ssize_t LockFile::Write(const void* buffer,const ssize_t buffer_size) const {
     return write(this->fd,buffer,(size_t)buffer_size);
 }
 
+ssize_t LockFile::WriteFromStart(const void* buffer,const ssize_t buffer_size) const {
+    lseek(this->fd,0,SEEK_SET);
+    return write(this->fd,buffer,(size_t)buffer_size);
+}
+
 ssize_t LockFile::Write(const std::string &buffer) const {
     return this->Write(buffer.c_str(),buffer.size());
+}
+
+ssize_t LockFile::WriteFromStart(const std::string &buffer) const {
+    return this->WriteFromStart(buffer.c_str(),buffer.size());
 }
 
 LockFile :: ~LockFile () {
@@ -45,5 +54,10 @@ LockFile :: ~LockFile () {
 
 int LockFile::readLock() {
     this->flock1.l_type = F_RDLCK;
-    return fcntl( 0,F_SETLKW,&(this->flock1) );
+    return fcntl(this->fd,F_SETLKW,&(this->flock1) );
+}
+
+void LockFile::cleanFile() {
+    close(this->fd);
+    this->fd = open(this->name.c_str(),O_RDWR | O_TRUNC, 0777);
 }

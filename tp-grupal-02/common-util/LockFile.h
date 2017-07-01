@@ -16,8 +16,13 @@ public:
     int free();
     int readFree();
 
+    void cleanFile();
+
     ssize_t Write(const void* buffer, const ssize_t buffer_size) const;
     ssize_t Write(const std::string& buffer) const;
+
+    ssize_t WriteFromStart(const void* buffer,const ssize_t buffer_size) const;
+    ssize_t WriteFromStart(const std::string &buffer) const;
 
 private:
     struct flock flock1;
